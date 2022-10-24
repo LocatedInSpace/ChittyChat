@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+option go_package = "github.com/LocatedInSpace/ChittyChat/proto";
+
+package proto;
+
+// compile command:
+// protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative [path to file, ex. proto/template.proto]
+
+
+// The template service definition.
+// you can call it whatever you want
+service ChittyChat
+{
+    rpc Join (Information) returns (stream StatusChange);
+
+    rpc Publish (stream MessageSent) returns (stream MessageRecv);
+}
+
+message Information {
+    string clientName = 1;
+}
+
+// notice the stream of StatusChange, this is since other people joining chatroom
+// will be notified through this stream aswell
+message StatusChange {
+    // if joined is false on first message in stream, then you are not registered - probably due
+    // to non-unique name. for the rest of the stream however, it's a way of determining whether
+    // a person left or joined for broadcasting that information.
+    bool joined = 1;
+    // name of client that joined
+    string clientName = 2;
+    // id of client, this is used in Message, to not send the full clientName each time
+    // clients are expected to keep track of mapping id -> clientName
+    int32 id = 3;
+    int64 lamport = 4;
+}
+
+message MessageSent {
+    string token = 1;
+    string message = 2;
+    int64 lamport = 3;
+}
+
+message MessageRecv {
+    int32 id = 1;
+    string message = 2;
+    int64 lamport = 3;
+}
