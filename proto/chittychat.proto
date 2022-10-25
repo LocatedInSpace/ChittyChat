@@ -7,12 +7,15 @@ package proto;
 // compile command:
 // protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative [path to file, ex. proto/template.proto]
 
+//protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative ./proto/chittychat.proto
 
 // The template service definition.
 // you can call it whatever you want
 service ChittyChat
 {
     rpc Join (Information) returns (stream StatusChange);
+
+    rpc QueryUsername(Id) returns (NameOfId);
 
     rpc Publish (stream MessageSent) returns (stream MessageRecv);
 }
@@ -28,12 +31,25 @@ message StatusChange {
     // to non-unique name. for the rest of the stream however, it's a way of determining whether
     // a person left or joined for broadcasting that information.
     bool joined = 1;
+    // first message in stream will have a token, this is how server authenticates
+    // individuals in Publish-stream
+    string token = 2;
     // name of client that joined
-    string clientName = 2;
+    string clientName = 3;
     // id of client, this is used in Message, to not send the full clientName each time
     // clients are expected to keep track of mapping id -> clientName
-    int32 id = 3;
-    int64 lamport = 4;
+    int32 id = 4;
+    int64 lamport = 5;
+}
+
+message Id {
+    int32 id = 1;
+}
+
+message NameOfId {
+    // if false, then id does not have an associated name
+    bool exists = 1;
+    string name = 2;
 }
 
 message MessageSent {

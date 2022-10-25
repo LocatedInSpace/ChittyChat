@@ -22,9 +22,67 @@ var serverPort = flag.String("server", "5400", "Tcp server")
 var server gRPC.ChittyChatClient //the server
 var ServerConn *grpc.ClientConn  //the server connection
 
+var token string
+
+// id to name
+var participants map[int32]string
+
+type Lamport struct {
+	timestamp int64 // logical time
+}
+
+var l Lamport = Lamport{timestamp: 0}
+
+func (l *Lamport) Get(time int64) int64 {
+	if l.timestamp > time {
+		l.timestamp++
+		return l.timestamp - 1
+	} else {
+		l.timestamp = time + 1
+		return l.timestamp
+	}
+}
+
+// looks up name in participants
+// if id does not have an associated name, then
+// query server for name
+func GetName(i int32) string {
+	if _, ok := participants[i]; ok {
+		return participants[i]
+	} else {
+		// meant to query server, for now, just like.. return default
+		return "NO NAME"
+	}
+}
+
+func LogUserUpdate(s *gRPC.StatusChange) {
+	if s.Joined {
+		participants[s.Id] = s.ClientName
+		log.Printf("Participant %s joined Chitty-Chat at Lamport time %v\n", s.ClientName, s.Lamport)
+	} else {
+		if _, ok := participants[s.Id]; ok {
+			delete(participants, s.Id)
+		}
+		log.Printf("Participant %s left Chitty-Chat at Lamport time %v\n", s.ClientName, s.Lamport)
+	}
+}
+
+func UserUpdates(s gRPC.ChittyChat_JoinClient) {
+	for {
+		status, err := s.Recv()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		LogUserUpdate(status)
+	}
+}
+
 func main() {
 	//parse flag/arguments
 	flag.Parse()
+
+	participants = make(map[int32]string)
 
 	fmt.Println("--- CLIENT APP ---")
 
@@ -41,12 +99,30 @@ func main() {
 	fmt.Println("Message to send to server")
 	fmt.Println("--------------------")
 
-	stream, err := server.Publish(context.Background())
+	// status stream
+	sStream, err := server.Join(context.Background(), &gRPC.Information{ClientName: *clientsName})
+	if err != nil {
+		log.Println(err)
+		fmt.Println(err)
+		return
+	}
+	status, err := sStream.Recv()
+	if err != nil || !status.Joined {
+		log.Println("Duplicate name, please change your client name")
+		return
+	}
+	token = status.Token
+	LogUserUpdate(status)
+	go UserUpdates(sStream)
+
+	// message stream
+	mStream, err := server.Publish(context.Background())
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
+	var lastTimestamp int64 = 0
 	//Infinite loop to listen for clients input.
 	for {
 		fmt.Print("-> ")
@@ -63,9 +139,10 @@ func main() {
 			continue
 		}
 
-		stream.Send(&gRPC.MessageSent{Token: "1337-32ua", Message: input, Lamport: 0})
-		msg, err := stream.Recv()
-		log.Printf("at Lamport:%v Received message from %v: %s", msg.Lamport, msg.Id, msg.Message)
+		mStream.Send(&gRPC.MessageSent{Token: token, Message: input, Lamport: l.Get(lastTimestamp)})
+		msg, err := mStream.Recv()
+		log.Printf("Received message from %s: %s | Lamport: %v", GetName(msg.Id), msg.Message, msg.Lamport)
+		lastTimestamp = msg.Lamport
 
 		//Convert string to int64, return error if the int is larger than 32bit or not a number
 		/*val, err := strconv.ParseInt(input, 10, 64)

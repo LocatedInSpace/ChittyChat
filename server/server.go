@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -13,6 +15,7 @@ import (
 	// followed by the path to the folder the proto file is in.
 	gRPC "github.com/LocatedInSpace/ChittyChat/proto"
 
+	"github.com/google/uuid"
 	"google.golang.org/grpc"
 )
 
@@ -20,8 +23,34 @@ type Server struct {
 	gRPC.UnimplementedChittyChatServer        // You need this line if you have a server
 	port                               string // Not required but useful if your server needs to know what port it's listening to
 
-	lamport int64      // logical time
-	mutex   sync.Mutex // used to lock the server to avoid race conditions.
+	lamport      Lamport                // logical time
+	mutex        sync.Mutex             // used to lock the server to avoid race conditions.
+	participants map[string]Participant // token -> Participant
+	unusedId     int32
+}
+
+type Participant struct {
+	id   int32
+	name string
+	// this channel is for messages *going* to Participant
+	// there is no such channel for incoming
+	messages chan gRPC.MessageRecv
+	// user joined/left *going* to Participant
+	statuses chan gRPC.StatusChange
+}
+
+type Lamport struct {
+	timestamp int64 // logical time
+}
+
+func (l *Lamport) Get(time int64) int64 {
+	if l.timestamp > time {
+		l.timestamp++
+		return l.timestamp - 1
+	} else {
+		l.timestamp = time + 1
+		return l.timestamp
+	}
 }
 
 // flags are used to get arguments from the terminal. Flags take a value, a default value and a description of the flag.
@@ -47,7 +76,7 @@ func launchServer() {
 	// Create listener tcp on given port or default port 5400
 	list, err := net.Listen("tcp", fmt.Sprintf("localhost:%s", *port))
 	if err != nil {
-		log.Printf("Server: Failed to listen on port %s: %v", *port, err) //If it fails to listen on the port, run launchServer method again with the next value/port in ports array
+		log.Printf("Server: Failed to listen on port %s: %v\n", *port, err) //If it fails to listen on the port, run launchServer method again with the next value/port in ports array
 		return
 	}
 
@@ -56,10 +85,12 @@ func launchServer() {
 	var opts []grpc.ServerOption
 	grpcServer := grpc.NewServer(opts...)
 
-	// makes a new server instance using the name and port from the flags.
+	l := new(Lamport)
+	l.timestamp = 1
 	server := &Server{
-		port:    *port,
-		lamport: 0, // gives default value, but not sure if it is necessary
+		port:         *port,
+		lamport:      *l,
+		participants: make(map[string]Participant),
 	}
 
 	gRPC.RegisterChittyChatServer(grpcServer, server) //Registers the server to the gRPC server.
@@ -69,6 +100,99 @@ func launchServer() {
 	if err := grpcServer.Serve(list); err != nil {
 		log.Fatalf("failed to serve %v", err)
 	}
+}
+
+func (s *Server) GetUnusedId() int32 {
+	/*in practice, this should reuse id's of stale connections*/
+	s.unusedId++
+	return s.unusedId - 1
+}
+
+func (s *Server) Join(in *gRPC.Information, stream gRPC.ChittyChat_JoinServer) error {
+	// new participant
+	nP := new(Participant)
+	nP.name = in.ClientName
+	for _, p := range s.participants {
+		if p.name == nP.name {
+			// name isnt unique, so say bad person, and then terminate stream
+			rsp := &gRPC.StatusChange{Joined: false}
+			stream.Send(rsp)
+			log.Printf("Duplicate client name (%s) tried to join, denied.\n", nP.name)
+			// this error (possibly due to datarace) does not get transmitted
+			// so it could be blank with no change in functionality
+			return errors.New("Duplicate name, please change your client name")
+		}
+	}
+
+	status := gRPC.StatusChange{Joined: true, ClientName: nP.name, Id: s.GetUnusedId(), Lamport: s.lamport.Get(0)}
+	// send StatusChange to all participants
+	for _, p := range s.participants {
+		// non blocking send
+		select {
+		case p.statuses <- status:
+			log.Printf("Sent StatusChange(joined) of %s to %s\n", nP.name, p.name)
+		default:
+			log.Printf("Could not send StatusChange(joined) of %s to %s\n", nP.name, p.name)
+		}
+		//p.statuses <- status
+
+	}
+	// send StatusChange with added token to new participant
+	token := uuid.New().String()
+	log.Printf("Generated token for %s: %s\n", nP.name, token)
+	status.Token = token
+	stream.Send(&status)
+	log.Printf("Sent StatusChange(joined) of %s to %s | Lamport: %v\n", nP.name, nP.name, status.Lamport)
+
+	nP.id = status.Id
+	nP.messages = make(chan gRPC.MessageRecv)
+	nP.statuses = make(chan gRPC.StatusChange)
+
+	s.participants[token] = *nP
+	var err error
+awaitStream:
+	for {
+		select {
+
+		case <-stream.Context().Done():
+			err = stream.Context().Err()
+			// not ideal, since stream.Context().Done() would ideally only fire when err != nil
+			// but for some reason it fires constantly, so we have to check
+			if err != nil {
+				break awaitStream
+			}
+		case msg := <-nP.statuses:
+			err = stream.Send(&msg)
+			if err != nil {
+				break awaitStream
+			}
+		}
+	}
+	log.Println(err)
+	status.Lamport = s.lamport.Get(0)
+	log.Printf("Participant %s left Chitty-Chat at Lamport time %v\n", nP.name, status.Lamport)
+	s.mutex.Lock()
+	delete(s.participants, token)
+	s.mutex.Unlock()
+
+	for _, p := range s.participants {
+		// non blocking send
+		status.Token = ""
+		status.Joined = false
+		select {
+		case p.statuses <- status:
+			log.Printf("Sent StatusChange(left) of %s to %s\n", nP.name, p.name)
+		default:
+			log.Printf("Could not send StatusChange(left) of %s to %s\n", nP.name, p.name)
+		}
+		//p.statuses <- status
+
+	}
+	return err
+}
+
+func (s *Server) QueryUsername(ctx context.Context, id *gRPC.Id) (*gRPC.NameOfId, error) {
+	return nil, nil
 }
 
 func (s *Server) Publish(msgStream gRPC.ChittyChat_PublishServer) error {
@@ -84,13 +208,18 @@ func (s *Server) Publish(msgStream gRPC.ChittyChat_PublishServer) error {
 		if err != nil {
 			return err
 		}
-		// log the message
-		log.Printf("Received message from %v: %s", msg.Token, msg.Message)
+
+		if _, ok := s.participants[msg.Token]; ok {
+			log.Printf("Received message from %v: %s | Lamport: %v, Corrected-Lamport: %v\n", msg.Token, msg.Message, msg.Lamport, s.lamport.Get(msg.Lamport)-1)
+			s.lamport.timestamp--
+		} else {
+			log.Printf("Invalid token (%v) given.\n", msg.Token)
+			return errors.New("Invalid token")
+		}
 
 		s.mutex.Lock()
-		rsp := &gRPC.MessageRecv{Id: 1, Message: msg.Message, Lamport: s.lamport}
+		rsp := &gRPC.MessageRecv{Id: s.participants[msg.Token].id, Message: msg.Message, Lamport: s.lamport.Get(msg.Lamport)}
 		msgStream.Send(rsp)
-		s.lamport++
 		s.mutex.Unlock()
 	}
 
@@ -105,7 +234,7 @@ func (s *Server) Publish(msgStream gRPC.ChittyChat_PublishServer) error {
 func setLog() *os.File {
 	// Clears the log.txt file when a new server is started
 	if err := os.Truncate("log.txt", 0); err != nil {
-		log.Printf("Failed to truncate: %v", err)
+		log.Printf("Failed to truncate: %v\n", err)
 	}
 
 	// This connects to the log file/changes the output of the log informaiton to the log.txt file.

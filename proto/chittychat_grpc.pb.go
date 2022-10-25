@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ChittyChatClient interface {
 	Join(ctx context.Context, in *Information, opts ...grpc.CallOption) (ChittyChat_JoinClient, error)
+	QueryUsername(ctx context.Context, in *Id, opts ...grpc.CallOption) (*NameOfId, error)
 	Publish(ctx context.Context, opts ...grpc.CallOption) (ChittyChat_PublishClient, error)
 }
 
@@ -62,6 +63,15 @@ func (x *chittyChatJoinClient) Recv() (*StatusChange, error) {
 	return m, nil
 }
 
+func (c *chittyChatClient) QueryUsername(ctx context.Context, in *Id, opts ...grpc.CallOption) (*NameOfId, error) {
+	out := new(NameOfId)
+	err := c.cc.Invoke(ctx, "/proto.ChittyChat/QueryUsername", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *chittyChatClient) Publish(ctx context.Context, opts ...grpc.CallOption) (ChittyChat_PublishClient, error) {
 	stream, err := c.cc.NewStream(ctx, &ChittyChat_ServiceDesc.Streams[1], "/proto.ChittyChat/Publish", opts...)
 	if err != nil {
@@ -98,6 +108,7 @@ func (x *chittyChatPublishClient) Recv() (*MessageRecv, error) {
 // for forward compatibility
 type ChittyChatServer interface {
 	Join(*Information, ChittyChat_JoinServer) error
+	QueryUsername(context.Context, *Id) (*NameOfId, error)
 	Publish(ChittyChat_PublishServer) error
 	mustEmbedUnimplementedChittyChatServer()
 }
@@ -108,6 +119,9 @@ type UnimplementedChittyChatServer struct {
 
 func (UnimplementedChittyChatServer) Join(*Information, ChittyChat_JoinServer) error {
 	return status.Errorf(codes.Unimplemented, "method Join not implemented")
+}
+func (UnimplementedChittyChatServer) QueryUsername(context.Context, *Id) (*NameOfId, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryUsername not implemented")
 }
 func (UnimplementedChittyChatServer) Publish(ChittyChat_PublishServer) error {
 	return status.Errorf(codes.Unimplemented, "method Publish not implemented")
@@ -146,6 +160,24 @@ func (x *chittyChatJoinServer) Send(m *StatusChange) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _ChittyChat_QueryUsername_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Id)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChittyChatServer).QueryUsername(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.ChittyChat/QueryUsername",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChittyChatServer).QueryUsername(ctx, req.(*Id))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ChittyChat_Publish_Handler(srv interface{}, stream grpc.ServerStream) error {
 	return srv.(ChittyChatServer).Publish(&chittyChatPublishServer{stream})
 }
@@ -178,7 +210,12 @@ func (x *chittyChatPublishServer) Recv() (*MessageSent, error) {
 var ChittyChat_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "proto.ChittyChat",
 	HandlerType: (*ChittyChatServer)(nil),
-	Methods:     []grpc.MethodDesc{},
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "QueryUsername",
+			Handler:    _ChittyChat_QueryUsername_Handler,
+		},
+	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "Join",
