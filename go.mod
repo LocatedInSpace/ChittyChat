@@ -3,6 +3,7 @@ module github.com/LocatedInSpace/ChittyChat
 go 1.19
 
 require (
+	github.com/gizak/termui/v3 v3.1.0
 	github.com/google/uuid v1.1.2
 	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.28.1
@@ -10,6 +11,9 @@ require (
 
 require (
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/mattn/go-runewidth v0.0.2 // indirect
+	github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 // indirect
+	github.com/nsf/termbox-go v0.0.0-20190121233118-02980233997d // indirect
 	golang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect
 	golang.org/x/sys v0.0.0-20210119212857-b64e53b001e4 // indirect
 	golang.org/x/text v0.3.3 // indirect

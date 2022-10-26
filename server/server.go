@@ -221,7 +221,7 @@ func (s *Server) PollMessages(stream gRPC.ChittyChat_PublishServer, msgs chan<- 
 		}
 
 		if _, ok := s.participants[msg.Token]; ok {
-			log.Printf("Received message from %v: %s | Lamport: %v, Corrected-Lamport: %v\n", s.participants[msg.Token].name, msg.Message, msg.Lamport, s.lamport.Get(msg.Lamport)-1)
+			log.Printf("Received '%s' from %v | Lamport: %v, Corrected-Lamport: %v\n", msg.Message, s.participants[msg.Token].name, msg.Lamport, s.lamport.Get(msg.Lamport)-1)
 			s.lamport.timestamp--
 			// add this to every participants channel
 			msg := gRPC.MessageRecv{Id: s.participants[msg.Token].id, Message: msg.Message, Lamport: s.lamport.Get(msg.Lamport)}
