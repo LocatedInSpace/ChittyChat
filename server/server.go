@@ -32,12 +32,13 @@ type Server struct {
 type Participant struct {
 	id   int32
 	name string
-	// this channel is for messages *going* to Participant
-	// there is no such channel for incoming
-	messages chan gRPC.MessageRecv
 	// user joined/left *going* to Participant
 	statuses chan gRPC.StatusChange
 }
+
+var msgChannels []chan<- gRPC.MessageRecv
+
+var msgLock sync.Mutex
 
 type Lamport struct {
 	timestamp int64 // logical time
@@ -145,7 +146,8 @@ func (s *Server) Join(in *gRPC.Information, stream gRPC.ChittyChat_JoinServer) e
 	log.Printf("Sent StatusChange(joined) of %s to %s | Lamport: %v\n", nP.name, nP.name, status.Lamport)
 
 	nP.id = status.Id
-	nP.messages = make(chan gRPC.MessageRecv)
+	// this gets set by PollMessages
+	//nP.messages = make(chan gRPC.MessageRecv)
 	nP.statuses = make(chan gRPC.StatusChange)
 
 	s.participants[token] = *nP
@@ -192,13 +194,22 @@ awaitStream:
 }
 
 func (s *Server) QueryUsername(ctx context.Context, id *gRPC.Id) (*gRPC.NameOfId, error) {
-	return nil, nil
+	for _, p := range s.participants {
+		if p.id == id.Id {
+			return &gRPC.NameOfId{Exists: true, Name: p.name}, nil
+		}
+	}
+	return &gRPC.NameOfId{Exists: false}, nil
 }
 
-func (s *Server) Publish(msgStream gRPC.ChittyChat_PublishServer) error {
+func (s *Server) PollMessages(stream gRPC.ChittyChat_PublishServer, msgs chan<- gRPC.MessageRecv) {
+
+	msgLock.Lock()
+	msgChannels = append(msgChannels, msgs)
+	msgLock.Unlock()
 	for {
 		// get the next message from the stream
-		msg, err := msgStream.Recv()
+		msg, err := stream.Recv()
 
 		// the stream is closed so we can exit the loop
 		if err == io.EOF {
@@ -206,28 +217,61 @@ func (s *Server) Publish(msgStream gRPC.ChittyChat_PublishServer) error {
 		}
 		// some other error
 		if err != nil {
-			return err
+			break
 		}
 
 		if _, ok := s.participants[msg.Token]; ok {
-			log.Printf("Received message from %v: %s | Lamport: %v, Corrected-Lamport: %v\n", msg.Token, msg.Message, msg.Lamport, s.lamport.Get(msg.Lamport)-1)
+			log.Printf("Received message from %v: %s | Lamport: %v, Corrected-Lamport: %v\n", s.participants[msg.Token].name, msg.Message, msg.Lamport, s.lamport.Get(msg.Lamport)-1)
 			s.lamport.timestamp--
+			// add this to every participants channel
+			msg := gRPC.MessageRecv{Id: s.participants[msg.Token].id, Message: msg.Message, Lamport: s.lamport.Get(msg.Lamport)}
+			for _, pMsgs := range msgChannels {
+				pMsgs <- msg
+			}
 		} else {
 			log.Printf("Invalid token (%v) given.\n", msg.Token)
-			return errors.New("Invalid token")
+			break
+			//return errors.New("Invalid token")
 		}
+	}
+	msgLock.Lock()
+	index := 0
+	for i, m := range msgChannels {
+		if m == msgs {
+			index = i
+		}
+	}
+	msgChannels = append(msgChannels[:index], msgChannels[index+1:]...)
+	msgLock.Unlock()
 
-		s.mutex.Lock()
-		rsp := &gRPC.MessageRecv{Id: s.participants[msg.Token].id, Message: msg.Message, Lamport: s.lamport.Get(msg.Lamport)}
-		msgStream.Send(rsp)
-		s.mutex.Unlock()
+	log.Printf("Ended PollMessages")
+}
+
+func (s *Server) Publish(stream gRPC.ChittyChat_PublishServer) error {
+	msgs := make(chan gRPC.MessageRecv)
+	go s.PollMessages(stream, msgs)
+
+	var err error
+awaitStream:
+	for {
+		select {
+
+		case <-stream.Context().Done():
+			err = stream.Context().Err()
+			// not ideal, since stream.Context().Done() would ideally only fire when err != nil
+			// but for some reason it fires constantly, so we have to check
+			if err != nil {
+				break awaitStream
+			}
+		case msg := <-msgs:
+			err = stream.Send(&msg)
+			if err != nil {
+				break awaitStream
+			}
+		}
 	}
 
-	// be a nice server and say goodbye to the client :)
-	//ack := &gRPC.Farewell{Message: "Goodbye"}
-	//msgStream.SendAndClose(ack)
-
-	return nil
+	return err
 }
 
 // sets the logger to use a log.txt file instead of the console

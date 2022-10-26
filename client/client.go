@@ -5,6 +5,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -43,6 +44,12 @@ func (l *Lamport) Get(time int64) int64 {
 	}
 }
 
+func (l *Lamport) Correct(time int64) {
+	if l.timestamp < time {
+		l.timestamp = time
+	}
+}
+
 // looks up name in participants
 // if id does not have an associated name, then
 // query server for name
@@ -51,7 +58,12 @@ func GetName(i int32) string {
 		return participants[i]
 	} else {
 		// meant to query server, for now, just like.. return default
-		return "NO NAME"
+		msg, _ := server.QueryUsername(context.Background(), &gRPC.Id{Id: i})
+		if msg.Exists {
+			participants[i] = msg.Name
+			return msg.Name
+		}
+		return "<UNKNOWN>"
 	}
 }
 
@@ -124,6 +136,7 @@ func main() {
 
 	var lastTimestamp int64 = 0
 	//Infinite loop to listen for clients input.
+	go RecvMessages(mStream)
 	for {
 		fmt.Print("-> ")
 
@@ -140,9 +153,9 @@ func main() {
 		}
 
 		mStream.Send(&gRPC.MessageSent{Token: token, Message: input, Lamport: l.Get(lastTimestamp)})
-		msg, err := mStream.Recv()
-		log.Printf("Received message from %s: %s | Lamport: %v", GetName(msg.Id), msg.Message, msg.Lamport)
-		lastTimestamp = msg.Lamport
+		//msg, err := mStream.Recv()
+		//log.Printf("Received message from %s: %s | Lamport: %v", GetName(msg.Id), msg.Message, msg.Lamport)
+		//lastTimestamp = msg.Lamport
 
 		//Convert string to int64, return error if the int is larger than 32bit or not a number
 		/*val, err := strconv.ParseInt(input, 10, 64)
@@ -154,6 +167,23 @@ func main() {
 		}
 		incrementVal(val)*/
 	}
+}
+
+func RecvMessages(mStream gRPC.ChittyChat_PublishClient) {
+	for {
+		msg, err := mStream.Recv()
+		// the stream is closed so we can exit the loop
+		if err == io.EOF {
+			break
+		}
+		// some other error
+		if err != nil {
+			break
+		}
+		log.Printf("Received message from %s: %s | Lamport: %v", GetName(msg.Id), msg.Message, msg.Lamport)
+		l.Correct(msg.Lamport)
+	}
+	log.Printf("Ended RecvMessages")
 }
 
 // connect to server
