@@ -1,0 +1,660 @@
+2022/10/27 03:31:31 client dummy: Attempts to dial on port 5400
+2022/10/27 03:31:31 the connection is:  READY
+2022/10/27 03:31:31 Participant da joined Chitty-Chat at Lamport time 1
+2022/10/27 03:31:33 client dummy: Attempts to dial on port 5400
+2022/10/27 03:31:33 the connection is:  READY
+2022/10/27 03:31:33 Duplicate name, please change your client name
+2022/10/27 03:31:35 client dummy: Attempts to dial on port 5400
+2022/10/27 03:31:35 the connection is:  READY
+2022/10/27 03:31:35 Participant aw joined Chitty-Chat at Lamport time 2
+2022/10/27 03:31:35 Participant aw joined Chitty-Chat at Lamport time 2
+2022/10/27 03:31:39 aw: da | Lamport: 4
+2022/10/27 03:31:39 aw: da | Lamport: 4
+2022/10/27 03:31:42 aw: da | Lamport: 5
+2022/10/27 03:31:42 aw: da | Lamport: 5
+2022/10/27 03:31:57 aw: adw | Lamport: 6
+2022/10/27 03:31:57 aw: adw | Lamport: 6
+2022/10/27 03:31:58 aw: a | Lamport: 7
+2022/10/27 03:31:58 aw: a | Lamport: 7
+2022/10/27 03:31:59 aw: d | Lamport: 8
+2022/10/27 03:31:59 aw: d | Lamport: 8
+2022/10/27 03:32:00 aw: da | Lamport: 9
+2022/10/27 03:32:00 aw: da | Lamport: 9
+2022/10/27 03:32:01 aw: da | Lamport: 10
+2022/10/27 03:32:01 aw: da | Lamport: 10
+2022/10/27 03:32:04 aw: da | Lamport: 11
+2022/10/27 03:32:04 aw: da | Lamport: 11
+2022/10/27 03:32:07 Participant aw left Chitty-Chat at Lamport time 11
+2022/10/27 03:48:26 client dummy: Attempts to dial on port 5400
+2022/10/27 03:48:26 the connection is:  READY
+2022/10/27 03:48:26 Participant turning the tables joined Chitty-Chat at Lamport time 13
+2022/10/27 03:48:31 client dummy: Attempts to dial on port 5400
+2022/10/27 03:48:31 the connection is:  READY
+2022/10/27 03:48:31 Participant awesome sauce joined Chitty-Chat at Lamport time 14
+2022/10/27 03:48:31 Participant awesome sauce joined Chitty-Chat at Lamport time 14
+2022/10/27 03:48:32 awesome sauce: dwa | Lamport: 16
+2022/10/27 03:48:32 awesome sauce: dwa | Lamport: 16
+2022/10/27 03:48:36 awesome sauce: da | Lamport: 17
+2022/10/27 03:48:36 awesome sauce: da | Lamport: 17
+2022/10/27 03:48:43 turning the tables: kdkao | Lamport: 18
+2022/10/27 03:48:43 turning the tables: kdkao | Lamport: 18
+2022/10/27 03:48:45 turning the tables: ? | Lamport: 19
+2022/10/27 03:48:45 turning the tables: ? | Lamport: 19
+2022/10/27 03:48:46 turning the tables: ? | Lamport: 20
+2022/10/27 03:48:46 turning the tables: ? | Lamport: 20
+2022/10/27 03:48:48 turning the tables: ? | Lamport: 21
+2022/10/27 03:48:48 turning the tables: ? | Lamport: 21
+2022/10/27 03:48:49 turning the tables: dwa | Lamport: 22
+2022/10/27 03:48:49 turning the tables: dwa | Lamport: 22
+2022/10/27 03:48:52 awesome sauce: s | Lamport: 24
+2022/10/27 03:48:52 awesome sauce: s | Lamport: 24
+2022/10/27 03:48:52 awesome sauce: a | Lamport: 25
+2022/10/27 03:48:52 awesome sauce: a | Lamport: 25
+2022/10/27 03:48:53 awesome sauce: c | Lamport: 26
+2022/10/27 03:48:53 awesome sauce: c | Lamport: 26
+2022/10/27 03:48:54 awesome sauce: c | Lamport: 27
+2022/10/27 03:48:54 awesome sauce: c | Lamport: 27
+2022/10/27 03:48:54 awesome sauce: c | Lamport: 28
+2022/10/27 03:48:54 awesome sauce: c | Lamport: 28
+2022/10/27 03:48:56 awesome sauce: he lo | Lamport: 29
+2022/10/27 03:48:56 awesome sauce: he lo | Lamport: 29
+2022/10/27 03:48:57 awesome sauce: he  lo | Lamport: 30
+2022/10/27 03:48:57 awesome sauce: he  lo | Lamport: 30
+2022/10/27 03:48:59 awesome sauce: he lo | Lamport: 31
+2022/10/27 03:48:59 awesome sauce: he lo | Lamport: 31
+2022/10/27 03:49:00 awesome sauce: ? | Lamport: 32
+2022/10/27 03:49:00 awesome sauce: ? | Lamport: 32
+2022/10/27 03:49:01 awesome sauce: he lo | Lamport: 33
+2022/10/27 03:49:01 awesome sauce: he lo | Lamport: 33
+2022/10/27 03:49:05 Ended RecvMessages
+2022/10/27 03:49:05 Ended RecvMessages
+2022/10/27 03:49:05 rpc error: code = Unavailable desc = error reading from server: read tcp 127.0.0.1:61161->127.0.0.1:5400: wsarecv: An existing connection was forcibly closed by the remote host.
+2022/10/27 03:49:05 Ended UserUpdates
+2022/10/27 03:49:05 rpc error: code = Unavailable desc = error reading from server: read tcp 127.0.0.1:61163->127.0.0.1:5400: wsarecv: An existing connection was forcibly closed by the remote host.
+2022/10/27 03:49:05 Ended UserUpdates
+2022/10/27 03:49:13 client dummy: Attempts to dial on port 5400
+2022/10/27 03:51:19 client dummy: Attempts to dial on port 5400
+2022/10/27 03:51:19 the connection is:  READY
+2022/10/27 03:51:19 Received Lamport-time 1, instead using own Lamport (33)
+2022/10/27 03:51:19 Participant da joined Chitty-Chat at Lamport time 1
+2022/10/27 03:51:22 EOF
+2022/10/27 03:51:22 Ended SendMessages
+2022/10/27 03:51:23 client dummy: Attempts to dial on port 5400
+2022/10/27 03:51:23 the connection is:  READY
+2022/10/27 03:51:23 Received Lamport-time 2, instead using own Lamport (34)
+2022/10/27 03:51:23 Participant d joined Chitty-Chat at Lamport time 2
+2022/10/27 03:51:23 Received Lamport-time 2, instead using own Lamport (34)
+2022/10/27 03:51:23 Participant d joined Chitty-Chat at Lamport time 2
+2022/10/27 03:51:25 the connection is:  READY
+2022/10/27 03:51:25 Duplicate name, please change your client name
+2022/10/27 03:51:30 d: da | Lamport: 35
+2022/10/27 03:51:30 d: da | Lamport: 35
+2022/10/27 03:51:31 d: da | Lamport: 36
+2022/10/27 03:51:31 d: da | Lamport: 36
+2022/10/27 03:51:33 d: da | Lamport: 37
+2022/10/27 03:51:33 d: da | Lamport: 37
+2022/10/27 03:51:33 d: da | Lamport: 38
+2022/10/27 03:51:33 d: da | Lamport: 38
+2022/10/27 03:51:34 d: d | Lamport: 39
+2022/10/27 03:51:34 d: d | Lamport: 39
+2022/10/27 03:51:35 d: d | Lamport: 40
+2022/10/27 03:51:35 d: d | Lamport: 40
+2022/10/27 03:51:35 d: d | Lamport: 41
+2022/10/27 03:51:35 d: d | Lamport: 41
+2022/10/27 03:51:36 d: d | Lamport: 42
+2022/10/27 03:51:36 d: d | Lamport: 42
+2022/10/27 03:51:37 d: d | Lamport: 43
+2022/10/27 03:51:37 d: d | Lamport: 43
+2022/10/27 03:51:37 d: d | Lamport: 44
+2022/10/27 03:51:37 d: d | Lamport: 44
+2022/10/27 03:51:38 d: d | Lamport: 45
+2022/10/27 03:51:38 d: d | Lamport: 45
+2022/10/27 03:51:38 d: d | Lamport: 46
+2022/10/27 03:51:38 d: d | Lamport: 46
+2022/10/27 03:51:39 d: d | Lamport: 47
+2022/10/27 03:51:39 d: d | Lamport: 47
+2022/10/27 03:51:39 d: d | Lamport: 48
+2022/10/27 03:51:39 d: d | Lamport: 48
+2022/10/27 03:51:41 d: ?? | Lamport: 49
+2022/10/27 03:51:41 d: ?? | Lamport: 49
+2022/10/27 03:51:46 client dummy: Attempts to dial on port 5400
+2022/10/27 03:51:47 the connection is:  READY
+2022/10/27 03:51:47 Participant d joined Chitty-Chat at Lamport time 51
+2022/10/27 03:51:52 d: whats up | Lamport: 53
+2022/10/27 03:51:53 d: ? | Lamport: 54
+2022/10/27 03:51:55 d: not much | Lamport: 55
+2022/10/27 03:51:57 d: what about you | Lamport: 56
+2022/10/27 03:52:04 client dummy: Attempts to dial on port 5400
+2022/10/27 03:52:04 the connection is:  READY
+2022/10/27 03:52:04 Participant a joined Chitty-Chat at Lamport time 56
+2022/10/27 03:52:04 Participant a joined Chitty-Chat at Lamport time 56
+2022/10/27 03:52:08 a: im doing fine, thanks | Lamport: 58
+2022/10/27 03:52:08 a: im doing fine, thanks | Lamport: 58
+2022/10/27 03:54:26 Received Lamport-time 58, instead using own Lamport (59)
+2022/10/27 03:54:26 Participant a left Chitty-Chat at Lamport time 58
+2022/10/27 03:58:32 d: Attempts to dial on port 5400
+2022/10/27 03:58:32 the connection is:  READY
+2022/10/27 03:58:32 Participant d joined Chitty-Chat at Lamport time 60
+2022/10/27 04:00:17 da: Attempts to dial on port 5400
+2022/10/27 04:00:17 the connection is:  READY
+2022/10/27 04:00:17 Participant da joined Chitty-Chat at Lamport time 62
+2022/10/27 04:00:17 da: da | Lamport: 64
+2022/10/27 04:02:27 s: Attempts to dial on port 5400
+2022/10/27 04:02:27 the connection is:  READY
+2022/10/27 04:02:27 Participant s joined Chitty-Chat at Lamport time 65
+2022/10/27 04:04:20 Tried to scroll down when li.Empty()
+2022/10/27 04:04:49 d: Attempts to dial on port 5400
+2022/10/27 04:04:49 the connection is:  READY
+2022/10/27 04:04:49 Participant d joined Chitty-Chat at Lamport time 67
+2022/10/27 04:04:51 d: da | Lamport: 69
+2022/10/27 04:04:51 d: daw | Lamport: 70
+2022/10/27 04:04:51 d: da | Lamport: 71
+2022/10/27 04:04:51 d: wd | Lamport: 72
+2022/10/27 04:04:51 d: awd | Lamport: 73
+2022/10/27 04:04:52 d: aw | Lamport: 74
+2022/10/27 04:04:52 d: daw | Lamport: 75
+2022/10/27 04:04:52 d: da | Lamport: 76
+2022/10/27 04:04:52 d: wd | Lamport: 77
+2022/10/27 04:04:52 d: aw | Lamport: 78
+2022/10/27 04:04:52 d: daw | Lamport: 79
+2022/10/27 04:04:53 d: d | Lamport: 80
+2022/10/27 04:04:53 d: awd | Lamport: 81
+2022/10/27 04:04:53 d: aw | Lamport: 82
+2022/10/27 04:04:53 d: daw | Lamport: 83
+2022/10/27 04:04:53 d: d | Lamport: 84
+2022/10/27 04:04:53 d: aw | Lamport: 85
+2022/10/27 04:04:54 d: dwa | Lamport: 86
+2022/10/27 04:04:54 d: daw | Lamport: 87
+2022/10/27 04:04:54 d: d | Lamport: 88
+2022/10/27 04:04:54 d: wad | Lamport: 89
+2022/10/27 04:04:54 d: aw | Lamport: 90
+2022/10/27 04:04:55 d: daw | Lamport: 91
+2022/10/27 04:04:55 d: d | Lamport: 92
+2022/10/27 04:04:56 d: aw | Lamport: 93
+2022/10/27 04:05:01 da: Attempts to dial on port 5400
+2022/10/27 04:05:01 the connection is:  READY
+2022/10/27 04:05:01 Participant da joined Chitty-Chat at Lamport time 93
+2022/10/27 04:05:01 Participant da joined Chitty-Chat at Lamport time 93
+2022/10/27 04:05:03 da: d | Lamport: 95
+2022/10/27 04:05:03 da: d | Lamport: 95
+2022/10/27 04:05:04 da: d | Lamport: 96
+2022/10/27 04:05:04 da: d | Lamport: 96
+2022/10/27 04:05:06 da: d | Lamport: 97
+2022/10/27 04:05:06 da: d | Lamport: 97
+2022/10/27 04:05:08 da: a | Lamport: 98
+2022/10/27 04:05:08 da: a | Lamport: 98
+2022/10/27 04:05:11 da: a | Lamport: 99
+2022/10/27 04:05:11 da: a | Lamport: 99
+2022/10/27 04:05:12 da: a | Lamport: 100
+2022/10/27 04:05:12 da: a | Lamport: 100
+2022/10/27 04:05:13 da: a | Lamport: 101
+2022/10/27 04:05:13 da: a | Lamport: 101
+2022/10/27 04:05:14 da: a | Lamport: 102
+2022/10/27 04:05:14 da: a | Lamport: 102
+2022/10/27 04:05:15 da: a | Lamport: 103
+2022/10/27 04:05:15 da: a | Lamport: 103
+2022/10/27 04:05:16 da: a | Lamport: 104
+2022/10/27 04:05:16 da: a | Lamport: 104
+2022/10/27 04:05:16 da: a | Lamport: 105
+2022/10/27 04:05:16 da: a | Lamport: 105
+2022/10/27 04:05:52 Participant d left Chitty-Chat at Lamport time 105
+2022/10/27 04:06:04 midi: Attempts to dial on port 5400
+2022/10/27 04:06:04 the connection is:  READY
+2022/10/27 04:06:04 Participant midi joined Chitty-Chat at Lamport time 107
+2022/10/27 04:06:06 johnny: Attempts to dial on port 5400
+2022/10/27 04:06:06 the connection is:  READY
+2022/10/27 04:06:06 Participant johnny joined Chitty-Chat at Lamport time 108
+2022/10/27 04:06:06 Participant johnny joined Chitty-Chat at Lamport time 108
+2022/10/27 04:06:09 johnny: d | Lamport: 110
+2022/10/27 04:06:09 johnny: d | Lamport: 110
+2022/10/27 04:06:11 johnny: d | Lamport: 111
+2022/10/27 04:06:11 johnny: d | Lamport: 111
+2022/10/27 04:06:12 johnny: d | Lamport: 112
+2022/10/27 04:06:12 johnny: d | Lamport: 112
+2022/10/27 04:06:12 johnny: d | Lamport: 113
+2022/10/27 04:06:12 johnny: d | Lamport: 113
+2022/10/27 04:06:12 johnny: d | Lamport: 114
+2022/10/27 04:06:12 johnny: d | Lamport: 114
+2022/10/27 04:06:13 johnny: d | Lamport: 115
+2022/10/27 04:06:13 johnny: d | Lamport: 115
+2022/10/27 04:06:13 johnny: a | Lamport: 116
+2022/10/27 04:06:13 johnny: a | Lamport: 116
+2022/10/27 04:06:14 johnny: a | Lamport: 117
+2022/10/27 04:06:14 johnny: a | Lamport: 117
+2022/10/27 04:06:15 johnny: a | Lamport: 118
+2022/10/27 04:06:15 johnny: a | Lamport: 118
+2022/10/27 04:06:15 johnny: a | Lamport: 119
+2022/10/27 04:06:15 johnny: a | Lamport: 119
+2022/10/27 04:06:16 johnny: ? | Lamport: 120
+2022/10/27 04:06:16 johnny: ? | Lamport: 120
+2022/10/27 04:06:18 johnny: ok... weird | Lamport: 121
+2022/10/27 04:06:18 johnny: ok... weird | Lamport: 121
+2022/10/27 04:06:19 Participant johnny left Chitty-Chat at Lamport time 121
+2022/10/27 04:06:27 johnny: Attempts to dial on port 5400
+2022/10/27 04:06:27 the connection is:  READY
+2022/10/27 04:06:27 Participant johnny joined Chitty-Chat at Lamport time 122
+2022/10/27 04:06:27 Participant johnny joined Chitty-Chat at Lamport time 122
+2022/10/27 04:07:01 johnny: hello WORLD! it is i johnny, back again to greet you with one of my classic long messages, that i send so often, haha, you know how it be, my padawans - i am simply one of the masses, a true master of the message if you will | Lamport: 124
+2022/10/27 04:07:01 johnny: hello WORLD! it is i johnny, back again to greet you with one of my classic long messages, that i send so often, haha, you know how it be, my padawans - i am simply one of the masses, a true master of the message if you will | Lamport: 124
+2022/10/27 04:07:20 johnny: d | Lamport: 125
+2022/10/27 04:07:20 johnny: d | Lamport: 125
+2022/10/27 04:07:22 johnny: d | Lamport: 126
+2022/10/27 04:07:22 johnny: d | Lamport: 126
+2022/10/27 04:27:49 Participant midi left Chitty-Chat at Lamport time 126
+2022/10/27 04:39:31 Ended RecvMessages
+2022/10/27 04:39:31 rpc error: code = Unavailable desc = error reading from server: read tcp 127.0.0.1:63240->127.0.0.1:5400: wsarecv: An existing connection was forcibly closed by the remote host.
+2022/10/27 04:39:31 Ended UserUpdates
+2022/10/27 04:51:32 dwa: Attempts to dial on port 5400
+2022/10/27 04:51:32 the connection is:  READY
+2022/10/27 04:51:32 Correcting own Lamport (1), instead using supplied Lamport-time 3
+2022/10/27 04:51:32 Participant dwa joined Chitty-Chat at Lamport time 2
+2022/10/27 05:13:50 d: Attempts to dial on port 5400
+2022/10/27 05:13:50 the connection is:  READY
+2022/10/27 05:13:50 Correcting own Lamport (2), instead using supplied Lamport-time 4
+2022/10/27 05:13:50 Participant d joined Chitty-Chat at Lamport time 3
+2022/10/27 05:13:50 Correcting own Lamport (1), instead using supplied Lamport-time 4
+2022/10/27 05:13:50 Participant d joined Chitty-Chat at Lamport time 3
+2022/10/27 05:18:56 Ended RecvMessages
+2022/10/27 05:18:56 Ended RecvMessages
+2022/10/27 05:18:56 rpc error: code = Unavailable desc = error reading from server: read tcp 127.0.0.1:58583->127.0.0.1:5400: wsarecv: An existing connection was forcibly closed by the remote host.
+2022/10/27 05:18:56 Ended UserUpdates
+2022/10/27 05:18:56 rpc error: code = Unavailable desc = error reading from server: read tcp 127.0.0.1:60740->127.0.0.1:5400: wsarecv: An existing connection was forcibly closed by the remote host.
+2022/10/27 05:18:56 Ended UserUpdates
+2022/10/27 05:19:05 d: Attempts to dial on port 5400
+2022/10/27 05:19:05 the connection is:  READY
+2022/10/27 05:19:05 Current lam: %v, new lam: %v
+ 1 1
+2022/10/27 05:19:05 Correcting own Lamport (1), instead using supplied Lamport-time 3
+2022/10/27 05:19:05 Participant d joined Chitty-Chat at Lamport time 2
+2022/10/27 05:19:51 midi: Attempts to dial on port 5400
+2022/10/27 05:19:51 the connection is:  READY
+2022/10/27 05:19:51 Current lam: 1, new lam: 1
+2022/10/27 05:19:51 Correcting own Lamport (1), instead using supplied Lamport-time 3
+2022/10/27 05:19:51 Participant midi joined Chitty-Chat at Lamport time 2
+2022/10/27 05:21:55 Ended RecvMessages
+2022/10/27 05:21:55 rpc error: code = Unavailable desc = error reading from server: read tcp 127.0.0.1:60793->127.0.0.1:5400: wsarecv: An existing connection was forcibly closed by the remote host.
+2022/10/27 05:21:55 Ended UserUpdates
+2022/10/27 05:22:20 f: Attempts to dial on port 5400
+2022/10/27 05:22:20 the connection is:  READY
+2022/10/27 05:22:20 Current lam: 1, new lam: 1
+2022/10/27 05:22:20 Correcting own Lamport (1), instead using supplied Lamport-time 3
+2022/10/27 05:22:20 Participant f joined Chitty-Chat at Lamport time 2
+2022/10/27 05:25:26 Ended RecvMessages
+2022/10/27 05:25:26 rpc error: code = Unavailable desc = error reading from server: read tcp 127.0.0.1:60826->127.0.0.1:5400: wsarecv: An existing connection was forcibly closed by the remote host.
+2022/10/27 05:25:26 Ended UserUpdates
+2022/10/27 05:25:44 he: Attempts to dial on port 5400
+2022/10/27 05:25:44 the connection is:  READY
+2022/10/27 05:25:44 Current lam: 1, new lam: 1
+2022/10/27 05:25:44 Correcting own Lamport (1), instead using supplied Lamport-time 3
+2022/10/27 05:25:44 Participant he joined Chitty-Chat at Lamport time 2
+2022/10/27 05:28:13 awesome: Attempts to dial on port 5400
+2022/10/27 05:28:13 the connection is:  READY
+2022/10/27 05:28:13 Current lam: 1, new lam: 1
+2022/10/27 05:28:13 Correcting own Lamport (2), instead using supplied Lamport-time 4
+2022/10/27 05:28:13 Participant awesome joined Chitty-Chat at Lamport time 3
+2022/10/27 05:28:13 Correcting own Lamport (1), instead using supplied Lamport-time 4
+2022/10/27 05:28:13 Participant awesome joined Chitty-Chat at Lamport time 3
+2022/10/27 05:28:17 awesome: jiodjwioa | Lamport: 5
+2022/10/27 05:28:17 awesome: jiodjwioa | Lamport: 5
+2022/10/27 05:28:17 Correcting own Lamport (3), instead using supplied Lamport-time 6
+2022/10/27 05:28:17 Correcting own Lamport (4), instead using supplied Lamport-time 6
+2022/10/27 05:28:18 awesome: djwaiojdioaw | Lamport: 7
+2022/10/27 05:28:18 Correcting own Lamport (5), instead using supplied Lamport-time 8
+2022/10/27 05:28:18 awesome: djwaiojdioaw | Lamport: 7
+2022/10/27 05:28:18 Correcting own Lamport (6), instead using supplied Lamport-time 8
+2022/10/27 05:28:18 awesome: dwjaoi | Lamport: 9
+2022/10/27 05:28:18 awesome: dwjaoi | Lamport: 9
+2022/10/27 05:28:18 Correcting own Lamport (7), instead using supplied Lamport-time 10
+2022/10/27 05:28:18 Correcting own Lamport (8), instead using supplied Lamport-time 10
+2022/10/27 05:28:50 Correcting own Lamport (9), instead using supplied Lamport-time 11
+2022/10/27 05:28:50 Participant awesome left Chitty-Chat at Lamport time 10
+2022/10/27 05:29:05 sam: Attempts to dial on port 5400
+2022/10/27 05:29:05 the connection is:  READY
+2022/10/27 05:29:05 Current lam: 1, new lam: 1
+2022/10/27 05:29:05 Correcting own Lamport (1), instead using supplied Lamport-time 3
+2022/10/27 05:29:05 Participant sam joined Chitty-Chat at Lamport time 2
+2022/10/27 05:30:41 sam: Attempts to dial on port 5400
+2022/10/27 05:30:41 the connection is:  READY
+2022/10/27 05:30:41 Current lam: 1, new lam: 1
+2022/10/27 05:30:41 Correcting own Lamport (1), instead using supplied Lamport-time 3
+2022/10/27 05:30:41 Participant sam joined Chitty-Chat at Lamport time 2
+2022/10/27 05:30:49 sam: h | Lamport: 4
+2022/10/27 05:30:49 Correcting own Lamport (3), instead using supplied Lamport-time 5
+2022/10/27 05:30:58 sam: h | Lamport: 6
+2022/10/27 05:30:58 Correcting own Lamport (5), instead using supplied Lamport-time 7
+2022/10/27 05:31:20 dwa: Attempts to dial on port 5400
+2022/10/27 05:31:20 the connection is:  READY
+2022/10/27 05:31:20 Current lam: 1, new lam: 1
+2022/10/27 05:31:20 Correcting own Lamport (6), instead using supplied Lamport-time 8
+2022/10/27 05:31:20 Participant dwa joined Chitty-Chat at Lamport time 7
+2022/10/27 05:31:20 Correcting own Lamport (1), instead using supplied Lamport-time 8
+2022/10/27 05:31:20 Participant dwa joined Chitty-Chat at Lamport time 7
+2022/10/27 05:33:47 Correcting own Lamport (7), instead using supplied Lamport-time 9
+2022/10/27 05:33:47 Participant dwa left Chitty-Chat at Lamport time 8
+2022/10/27 05:33:48 Ended RecvMessages
+2022/10/27 05:33:48 rpc error: code = Unavailable desc = error reading from server: read tcp 127.0.0.1:60311->127.0.0.1:5400: wsarecv: An existing connection was forcibly closed by the remote host.
+2022/10/27 05:33:48 Ended UserUpdates
+2022/10/27 05:34:40 dwadwa: Attempts to dial on port 5400
+2022/10/27 05:34:40 the connection is:  READY
+2022/10/27 05:34:40 Current lam: 1, new lam: 1
+2022/10/27 05:34:40 Correcting own Lamport (1), instead using supplied Lamport-time 3
+2022/10/27 05:34:40 Participant dwadwa joined Chitty-Chat at Lamport time 2
+2022/10/27 05:34:47 dwadwa: dwa | Lamport: 4
+2022/10/27 05:34:47 Correcting own Lamport (3), instead using supplied Lamport-time 5
+2022/10/27 05:34:49 dwadwa: ndwiao | Lamport: 6
+2022/10/27 05:34:49 Correcting own Lamport (5), instead using supplied Lamport-time 7
+2022/10/27 05:34:50 dwadwa: dwajio | Lamport: 8
+2022/10/27 05:34:50 Correcting own Lamport (7), instead using supplied Lamport-time 9
+2022/10/27 05:34:51 dwadwa: dwajoiu | Lamport: 10
+2022/10/27 05:34:51 Correcting own Lamport (9), instead using supplied Lamport-time 11
+2022/10/27 05:34:55 dwaj: Attempts to dial on port 5400
+2022/10/27 05:34:55 the connection is:  READY
+2022/10/27 05:34:55 Current lam: 1, new lam: 1
+2022/10/27 05:34:55 Correcting own Lamport (10), instead using supplied Lamport-time 13
+2022/10/27 05:34:55 Participant dwaj joined Chitty-Chat at Lamport time 12
+2022/10/27 05:34:55 Correcting own Lamport (1), instead using supplied Lamport-time 13
+2022/10/27 05:34:55 Participant dwaj joined Chitty-Chat at Lamport time 12
+2022/10/27 05:36:41 dwaj: dwadaw | Lamport: 14
+2022/10/27 05:36:41 Correcting own Lamport (12), instead using supplied Lamport-time 15
+2022/10/27 05:36:41 dwaj: dwadaw | Lamport: 14
+2022/10/27 05:36:41 Correcting own Lamport (13), instead using supplied Lamport-time 15
+2022/10/27 05:37:00 dwaj: ji | Lamport: 16
+2022/10/27 05:37:00 dwaj: ji | Lamport: 16
+2022/10/27 05:37:00 Correcting own Lamport (14), instead using supplied Lamport-time 17
+2022/10/27 05:37:00 Correcting own Lamport (15), instead using supplied Lamport-time 17
+2022/10/27 05:37:01 dwaj: dwa | Lamport: 18
+2022/10/27 05:37:01 dwaj: dwa | Lamport: 18
+2022/10/27 05:37:01 Correcting own Lamport (16), instead using supplied Lamport-time 19
+2022/10/27 05:37:01 Correcting own Lamport (17), instead using supplied Lamport-time 19
+2022/10/27 05:37:02 dwaj: awd | Lamport: 20
+2022/10/27 05:37:02 dwaj: awd | Lamport: 20
+2022/10/27 05:37:02 Correcting own Lamport (18), instead using supplied Lamport-time 21
+2022/10/27 05:37:02 Correcting own Lamport (19), instead using supplied Lamport-time 21
+2022/10/27 05:37:10 dwaj: awd | Lamport: 22
+2022/10/27 05:37:10 Correcting own Lamport (21), instead using supplied Lamport-time 23
+2022/10/27 05:37:10 dwaj: awd | Lamport: 22
+2022/10/27 05:37:10 Correcting own Lamport (20), instead using supplied Lamport-time 23
+2022/10/27 05:38:20 Correcting own Lamport (22), instead using supplied Lamport-time 24
+2022/10/27 05:38:20 Participant dwaj left Chitty-Chat at Lamport time 23
+2022/10/27 05:38:42 meesa: Attempts to dial on port 5400
+2022/10/27 05:38:42 the connection is:  READY
+2022/10/27 05:38:42 Current lam: 1, new lam: 1
+2022/10/27 05:38:42 Correcting own Lamport (23), instead using supplied Lamport-time 26
+2022/10/27 05:38:42 Participant meesa joined Chitty-Chat at Lamport time 25
+2022/10/27 05:38:42 Correcting own Lamport (1), instead using supplied Lamport-time 26
+2022/10/27 05:38:42 Participant meesa joined Chitty-Chat at Lamport time 25
+2022/10/27 05:38:46 meesa awesome: Attempts to dial on port 5400
+2022/10/27 05:38:46 the connection is:  READY
+2022/10/27 05:38:46 Current lam: 1, new lam: 1
+2022/10/27 05:38:46 Correcting own Lamport (25), instead using supplied Lamport-time 28
+2022/10/27 05:38:46 Participant meesa awesome joined Chitty-Chat at Lamport time 27
+2022/10/27 05:38:46 Correcting own Lamport (25), instead using supplied Lamport-time 28
+2022/10/27 05:38:46 Participant meesa awesome joined Chitty-Chat at Lamport time 27
+2022/10/27 05:38:46 Correcting own Lamport (1), instead using supplied Lamport-time 28
+2022/10/27 05:38:46 Participant meesa awesome joined Chitty-Chat at Lamport time 27
+2022/10/27 05:39:59 meesa awesome: dwa | Lamport: 29
+2022/10/27 05:39:59 Correcting own Lamport (27), instead using supplied Lamport-time 30
+2022/10/27 05:39:59 meesa awesome: dwa | Lamport: 29
+2022/10/27 05:39:59 Correcting own Lamport (28), instead using supplied Lamport-time 30
+2022/10/27 05:39:59 meesa awesome: dwa | Lamport: 29
+2022/10/27 05:39:59 Correcting own Lamport (27), instead using supplied Lamport-time 30
+2022/10/27 05:40:00 meesa awesome: dwa | Lamport: 31
+2022/10/27 05:40:00 Correcting own Lamport (30), instead using supplied Lamport-time 32
+2022/10/27 05:40:00 meesa awesome: dwa | Lamport: 31
+2022/10/27 05:40:00 Correcting own Lamport (29), instead using supplied Lamport-time 32
+2022/10/27 05:40:00 meesa awesome: dwa | Lamport: 31
+2022/10/27 05:40:00 Correcting own Lamport (29), instead using supplied Lamport-time 32
+2022/10/27 05:40:01 meesa awesome: awd | Lamport: 33
+2022/10/27 05:40:01 Correcting own Lamport (32), instead using supplied Lamport-time 34
+2022/10/27 05:40:01 meesa awesome: awd | Lamport: 33
+2022/10/27 05:40:01 Correcting own Lamport (31), instead using supplied Lamport-time 34
+2022/10/27 05:40:01 meesa awesome: awd | Lamport: 33
+2022/10/27 05:40:01 Correcting own Lamport (31), instead using supplied Lamport-time 34
+2022/10/27 05:40:02 meesa awesome: jio | Lamport: 35
+2022/10/27 05:40:02 meesa awesome: jio | Lamport: 35
+2022/10/27 05:40:02 Correcting own Lamport (33), instead using supplied Lamport-time 36
+2022/10/27 05:40:02 meesa awesome: jio | Lamport: 35
+2022/10/27 05:40:02 Correcting own Lamport (33), instead using supplied Lamport-time 36
+2022/10/27 05:40:02 Correcting own Lamport (34), instead using supplied Lamport-time 36
+2022/10/27 05:40:03 meesa: dwa | Lamport: 37
+2022/10/27 05:40:03 meesa: dwa | Lamport: 37
+2022/10/27 05:40:03 Correcting own Lamport (36), instead using supplied Lamport-time 38
+2022/10/27 05:40:03 Correcting own Lamport (35), instead using supplied Lamport-time 38
+2022/10/27 05:40:03 meesa: dwa | Lamport: 37
+2022/10/27 05:40:03 Correcting own Lamport (35), instead using supplied Lamport-time 38
+2022/10/27 05:40:09 Correcting own Lamport (37), instead using supplied Lamport-time 39
+2022/10/27 05:40:09 Participant meesa awesome left Chitty-Chat at Lamport time 38
+2022/10/27 05:40:09 Correcting own Lamport (37), instead using supplied Lamport-time 39
+2022/10/27 05:40:09 Participant meesa awesome left Chitty-Chat at Lamport time 38
+2022/10/27 05:40:37 dwadaw: Attempts to dial on port 5400
+2022/10/27 05:40:37 the connection is:  READY
+2022/10/27 05:40:37 Current lam: 1, new lam: 1
+2022/10/27 05:40:37 Correcting own Lamport (38), instead using supplied Lamport-time 41
+2022/10/27 05:40:37 Participant dwadaw joined Chitty-Chat at Lamport time 40
+2022/10/27 05:40:37 Correcting own Lamport (38), instead using supplied Lamport-time 41
+2022/10/27 05:40:37 Participant dwadaw joined Chitty-Chat at Lamport time 40
+2022/10/27 05:40:37 Correcting own Lamport (1), instead using supplied Lamport-time 41
+2022/10/27 05:40:37 Participant dwadaw joined Chitty-Chat at Lamport time 40
+2022/10/27 05:40:45 dwadjwaoi: Attempts to dial on port 5400
+2022/10/27 05:40:45 the connection is:  READY
+2022/10/27 05:40:45 Current lam: 1, new lam: 1
+2022/10/27 05:40:45 Correcting own Lamport (40), instead using supplied Lamport-time 43
+2022/10/27 05:40:45 Participant dwadjwaoi joined Chitty-Chat at Lamport time 42
+2022/10/27 05:40:45 Correcting own Lamport (40), instead using supplied Lamport-time 43
+2022/10/27 05:40:45 Participant dwadjwaoi joined Chitty-Chat at Lamport time 42
+2022/10/27 05:40:45 Correcting own Lamport (40), instead using supplied Lamport-time 43
+2022/10/27 05:40:45 Participant dwadjwaoi joined Chitty-Chat at Lamport time 42
+2022/10/27 05:40:45 Correcting own Lamport (1), instead using supplied Lamport-time 43
+2022/10/27 05:40:45 Participant dwadjwaoi joined Chitty-Chat at Lamport time 42
+2022/10/27 05:40:47 dwadwajoi: Attempts to dial on port 5400
+2022/10/27 05:40:47 the connection is:  READY
+2022/10/27 05:40:47 Current lam: 1, new lam: 1
+2022/10/27 05:40:47 Correcting own Lamport (42), instead using supplied Lamport-time 45
+2022/10/27 05:40:47 Participant dwadwajoi joined Chitty-Chat at Lamport time 44
+2022/10/27 05:40:47 Correcting own Lamport (42), instead using supplied Lamport-time 45
+2022/10/27 05:40:47 Participant dwadwajoi joined Chitty-Chat at Lamport time 44
+2022/10/27 05:40:47 Correcting own Lamport (42), instead using supplied Lamport-time 45
+2022/10/27 05:40:47 Participant dwadwajoi joined Chitty-Chat at Lamport time 44
+2022/10/27 05:40:47 Correcting own Lamport (42), instead using supplied Lamport-time 45
+2022/10/27 05:40:47 Participant dwadwajoi joined Chitty-Chat at Lamport time 44
+2022/10/27 05:40:47 Correcting own Lamport (1), instead using supplied Lamport-time 45
+2022/10/27 05:40:47 Participant dwadwajoi joined Chitty-Chat at Lamport time 44
+2022/10/27 05:41:04 dwadwajoi: d | Lamport: 46
+2022/10/27 05:41:04 dwadwajoi: d | Lamport: 46
+2022/10/27 05:41:04 Correcting own Lamport (44), instead using supplied Lamport-time 47
+2022/10/27 05:41:04 Correcting own Lamport (44), instead using supplied Lamport-time 47
+2022/10/27 05:41:04 dwadwajoi: d | Lamport: 46
+2022/10/27 05:41:04 Correcting own Lamport (45), instead using supplied Lamport-time 47
+2022/10/27 05:41:04 dwadwajoi: d | Lamport: 46
+2022/10/27 05:41:04 Correcting own Lamport (44), instead using supplied Lamport-time 47
+2022/10/27 05:41:04 dwadwajoi: d | Lamport: 46
+2022/10/27 05:41:04 Correcting own Lamport (44), instead using supplied Lamport-time 47
+2022/10/27 05:41:05 dwadwajoi: dk | Lamport: 48
+2022/10/27 05:41:05 dwadwajoi: dk | Lamport: 48
+2022/10/27 05:41:05 Correcting own Lamport (47), instead using supplied Lamport-time 49
+2022/10/27 05:41:05 Correcting own Lamport (46), instead using supplied Lamport-time 49
+2022/10/27 05:41:05 dwadwajoi: dk | Lamport: 48
+2022/10/27 05:41:05 Correcting own Lamport (46), instead using supplied Lamport-time 49
+2022/10/27 05:41:05 dwadwajoi: dk | Lamport: 48
+2022/10/27 05:41:05 Correcting own Lamport (46), instead using supplied Lamport-time 49
+2022/10/27 05:41:05 dwadwajoi: dk | Lamport: 48
+2022/10/27 05:41:05 Correcting own Lamport (46), instead using supplied Lamport-time 49
+2022/10/27 05:41:05 dwadwajoi: ?? | Lamport: 50
+2022/10/27 05:41:05 Correcting own Lamport (48), instead using supplied Lamport-time 51
+2022/10/27 05:41:05 dwadwajoi: ?? | Lamport: 50
+2022/10/27 05:41:05 Correcting own Lamport (48), instead using supplied Lamport-time 51
+2022/10/27 05:41:05 dwadwajoi: ?? | Lamport: 50
+2022/10/27 05:41:05 Correcting own Lamport (48), instead using supplied Lamport-time 51
+2022/10/27 05:41:05 dwadwajoi: ?? | Lamport: 50
+2022/10/27 05:41:05 dwadwajoi: ?? | Lamport: 50
+2022/10/27 05:41:05 Correcting own Lamport (48), instead using supplied Lamport-time 51
+2022/10/27 05:41:05 Correcting own Lamport (49), instead using supplied Lamport-time 51
+2022/10/27 05:41:10 dwadwajoi: what | Lamport: 52
+2022/10/27 05:41:10 Correcting own Lamport (51), instead using supplied Lamport-time 53
+2022/10/27 05:41:10 dwadwajoi: what | Lamport: 52
+2022/10/27 05:41:10 Correcting own Lamport (50), instead using supplied Lamport-time 53
+2022/10/27 05:41:10 dwadwajoi: what | Lamport: 52
+2022/10/27 05:41:10 Correcting own Lamport (50), instead using supplied Lamport-time 53
+2022/10/27 05:41:10 dwadwajoi: what | Lamport: 52
+2022/10/27 05:41:10 Correcting own Lamport (50), instead using supplied Lamport-time 53
+2022/10/27 05:41:10 dwadwajoi: what | Lamport: 52
+2022/10/27 05:41:10 Correcting own Lamport (50), instead using supplied Lamport-time 53
+2022/10/27 05:41:10 dwadwa: what | Lamport: 54
+2022/10/27 05:41:10 Correcting own Lamport (53), instead using supplied Lamport-time 55
+2022/10/27 05:41:10 dwadwa: what | Lamport: 54
+2022/10/27 05:41:10 Correcting own Lamport (52), instead using supplied Lamport-time 55
+2022/10/27 05:41:10 dwadwa: what | Lamport: 54
+2022/10/27 05:41:10 Correcting own Lamport (52), instead using supplied Lamport-time 55
+2022/10/27 05:41:10 dwadwa: what | Lamport: 54
+2022/10/27 05:41:10 Correcting own Lamport (52), instead using supplied Lamport-time 55
+2022/10/27 05:41:10 dwadwa: what | Lamport: 54
+2022/10/27 05:41:10 Correcting own Lamport (52), instead using supplied Lamport-time 55
+2022/10/27 05:41:27 dwadaw: da | Lamport: 56
+2022/10/27 05:41:27 Correcting own Lamport (54), instead using supplied Lamport-time 57
+2022/10/27 05:41:27 dwadaw: da | Lamport: 56
+2022/10/27 05:41:27 Correcting own Lamport (54), instead using supplied Lamport-time 57
+2022/10/27 05:41:27 dwadaw: da | Lamport: 56
+2022/10/27 05:41:27 Correcting own Lamport (55), instead using supplied Lamport-time 57
+2022/10/27 05:41:27 dwadaw: da | Lamport: 56
+2022/10/27 05:41:27 Correcting own Lamport (54), instead using supplied Lamport-time 57
+2022/10/27 05:41:27 dwadaw: da | Lamport: 56
+2022/10/27 05:41:27 Correcting own Lamport (54), instead using supplied Lamport-time 57
+2022/10/27 05:41:30 meesa: da | Lamport: 58
+2022/10/27 05:41:30 Correcting own Lamport (57), instead using supplied Lamport-time 59
+2022/10/27 05:41:30 meesa: da | Lamport: 58
+2022/10/27 05:41:30 Correcting own Lamport (56), instead using supplied Lamport-time 59
+2022/10/27 05:41:30 meesa: da | Lamport: 58
+2022/10/27 05:41:30 meesa: da | Lamport: 58
+2022/10/27 05:41:30 Correcting own Lamport (56), instead using supplied Lamport-time 59
+2022/10/27 05:41:30 Correcting own Lamport (56), instead using supplied Lamport-time 59
+2022/10/27 05:41:30 meesa: da | Lamport: 58
+2022/10/27 05:41:30 Correcting own Lamport (56), instead using supplied Lamport-time 59
+2022/10/27 05:41:35 meesa: da | Lamport: 60
+2022/10/27 05:41:35 meesa: da | Lamport: 60
+2022/10/27 05:41:35 Correcting own Lamport (58), instead using supplied Lamport-time 61
+2022/10/27 05:41:35 meesa: da | Lamport: 60
+2022/10/27 05:41:35 meesa: da | Lamport: 60
+2022/10/27 05:41:35 meesa: da | Lamport: 60
+2022/10/27 05:41:35 Correcting own Lamport (58), instead using supplied Lamport-time 61
+2022/10/27 05:41:35 Correcting own Lamport (58), instead using supplied Lamport-time 61
+2022/10/27 05:41:35 Correcting own Lamport (58), instead using supplied Lamport-time 61
+2022/10/27 05:41:35 Correcting own Lamport (59), instead using supplied Lamport-time 61
+2022/10/27 05:41:35 dwadaw: da | Lamport: 62
+2022/10/27 05:41:35 Correcting own Lamport (60), instead using supplied Lamport-time 63
+2022/10/27 05:41:35 dwadaw: da | Lamport: 62
+2022/10/27 05:41:35 Correcting own Lamport (60), instead using supplied Lamport-time 63
+2022/10/27 05:41:35 dwadaw: da | Lamport: 62
+2022/10/27 05:41:35 Correcting own Lamport (61), instead using supplied Lamport-time 63
+2022/10/27 05:41:35 dwadaw: da | Lamport: 62
+2022/10/27 05:41:35 dwadaw: da | Lamport: 62
+2022/10/27 05:41:35 Correcting own Lamport (60), instead using supplied Lamport-time 63
+2022/10/27 05:41:35 Correcting own Lamport (60), instead using supplied Lamport-time 63
+2022/10/27 05:44:15 dwadwa: dwa | Lamport: 64
+2022/10/27 05:44:15 dwadwa: dwa | Lamport: 64
+2022/10/27 05:44:15 Correcting own Lamport (62), instead using supplied Lamport-time 65
+2022/10/27 05:44:15 Correcting own Lamport (62), instead using supplied Lamport-time 65
+2022/10/27 05:44:15 dwadwa: dwa | Lamport: 64
+2022/10/27 05:44:15 Correcting own Lamport (62), instead using supplied Lamport-time 65
+2022/10/27 05:44:15 dwadwa: dwa | Lamport: 64
+2022/10/27 05:44:15 dwadwa: dwa | Lamport: 64
+2022/10/27 05:44:15 Correcting own Lamport (62), instead using supplied Lamport-time 65
+2022/10/27 05:44:15 Correcting own Lamport (63), instead using supplied Lamport-time 65
+2022/10/27 05:47:42 Ended RecvMessages
+2022/10/27 05:47:42 rpc error: code = Unavailable desc = error reading from server: read tcp 127.0.0.1:60407->127.0.0.1:5400: wsarecv: An existing connection was forcibly closed by the remote host.
+2022/10/27 05:47:42 Ended UserUpdates
+2022/10/27 05:47:42 Ended RecvMessages
+2022/10/27 05:47:42 rpc error: code = Unavailable desc = error reading from server: read tcp 127.0.0.1:60342->127.0.0.1:5400: wsarecv: An existing connection was forcibly closed by the remote host.
+2022/10/27 05:47:42 Ended UserUpdates
+2022/10/27 05:47:42 Ended RecvMessages
+2022/10/27 05:47:42 rpc error: code = Unavailable desc = error reading from server: read tcp 127.0.0.1:60386->127.0.0.1:5400: wsarecv: An existing connection was forcibly closed by the remote host.
+2022/10/27 05:47:42 Ended UserUpdates
+2022/10/27 05:47:42 Ended RecvMessages
+2022/10/27 05:47:42 rpc error: code = Unavailable desc = error reading from server: read tcp 127.0.0.1:60406->127.0.0.1:5400: wsarecv: An existing connection was forcibly closed by the remote host.
+2022/10/27 05:47:42 Ended UserUpdates
+2022/10/27 05:47:42 Ended RecvMessages
+2022/10/27 05:47:42 rpc error: code = Unavailable desc = error reading from server: read tcp 127.0.0.1:60408->127.0.0.1:5400: wsarecv: An existing connection was forcibly closed by the remote host.
+2022/10/27 05:47:42 Ended UserUpdates
+2022/10/27 05:47:53 cls: Attempts to dial on port 5400
+2022/10/27 05:47:53 the connection is:  READY
+2022/10/27 05:47:53 Current lam: 65, new lam: 65
+2022/10/27 05:47:53 Correcting own Lamport (65), instead using supplied Lamport-time 67
+2022/10/27 05:47:53 Participant cls joined Chitty-Chat at Lamport time 66
+2022/10/27 05:48:15 lamportsilly: Attempts to dial on port 5400
+2022/10/27 05:48:15 the connection is:  READY
+2022/10/27 05:48:15 Current lam: 1, new lam: 1
+2022/10/27 05:48:15 Correcting own Lamport (1), instead using supplied Lamport-time 3
+2022/10/27 05:48:15 Participant lamportsilly joined Chitty-Chat at Lamport time 2
+2022/10/27 05:48:24 lamportsilly: ko | Lamport: 4
+2022/10/27 05:48:24 Correcting own Lamport (3), instead using supplied Lamport-time 5
+2022/10/27 05:48:28 lamportsilly: kop | Lamport: 6
+2022/10/27 05:48:28 Correcting own Lamport (5), instead using supplied Lamport-time 7
+2022/10/27 05:48:36 lamportsilly: kop | Lamport: 8
+2022/10/27 05:48:36 Correcting own Lamport (7), instead using supplied Lamport-time 9
+2022/10/27 05:48:38 lamportsilly: kop | Lamport: 10
+2022/10/27 05:48:38 Correcting own Lamport (9), instead using supplied Lamport-time 11
+2022/10/27 05:48:40 lamportsilly: kop | Lamport: 12
+2022/10/27 05:48:40 Correcting own Lamport (11), instead using supplied Lamport-time 13
+2022/10/27 05:48:42 lamportsilly: kpo | Lamport: 14
+2022/10/27 05:48:42 Correcting own Lamport (13), instead using supplied Lamport-time 15
+2022/10/27 05:48:44 lamportsilly: kop | Lamport: 16
+2022/10/27 05:48:44 Correcting own Lamport (15), instead using supplied Lamport-time 17
+2022/10/27 05:48:46 lamportsilly: kop | Lamport: 18
+2022/10/27 05:48:46 Correcting own Lamport (17), instead using supplied Lamport-time 19
+2022/10/27 05:49:00 da: Attempts to dial on port 5400
+2022/10/27 05:49:00 the connection is:  READY
+2022/10/27 05:49:00 Current lam: 1, new lam: 1
+2022/10/27 05:49:00 Correcting own Lamport (18), instead using supplied Lamport-time 21
+2022/10/27 05:49:00 Participant da joined Chitty-Chat at Lamport time 20
+2022/10/27 05:49:00 Correcting own Lamport (1), instead using supplied Lamport-time 21
+2022/10/27 05:49:00 Participant da joined Chitty-Chat at Lamport time 20
+2022/10/27 05:49:56 Correcting own Lamport (20), instead using supplied Lamport-time 22
+2022/10/27 05:49:56 Participant da left Chitty-Chat at Lamport time 21
+2022/10/27 05:50:19 d: Attempts to dial on port 5400
+2022/10/27 05:50:19 the connection is:  READY
+2022/10/27 05:50:19 Current lam: 1, new lam: 1
+2022/10/27 05:50:19 Correcting own Lamport (21), instead using supplied Lamport-time 24
+2022/10/27 05:50:19 Participant d joined Chitty-Chat at Lamport time 23
+2022/10/27 05:50:19 Correcting own Lamport (1), instead using supplied Lamport-time 24
+2022/10/27 05:50:19 Participant d joined Chitty-Chat at Lamport time 23
+2022/10/27 05:50:22 Correcting own Lamport (23), instead using supplied Lamport-time 25
+2022/10/27 05:50:22 Participant d left Chitty-Chat at Lamport time 24
+2022/10/27 05:50:37 Ended RecvMessages
+2022/10/27 05:50:37 rpc error: code = Unavailable desc = error reading from server: read tcp 127.0.0.1:60465->127.0.0.1:5400: wsarecv: An existing connection was forcibly closed by the remote host.
+2022/10/27 05:50:37 Ended UserUpdates
+2022/10/27 05:50:46 penis: Attempts to dial on port 5400
+2022/10/27 05:50:46 the connection is:  READY
+2022/10/27 05:50:46 Current lam: 25, new lam: 25
+2022/10/27 05:50:46 Correcting own Lamport (25), instead using supplied Lamport-time 27
+2022/10/27 05:50:46 Participant penis joined Chitty-Chat at Lamport time 26
+2022/10/27 06:12:45 EOF
+2022/10/27 06:12:45 Ended SendMessages
+2022/10/27 06:12:46 dwa: Attempts to dial on port 5400
+2022/10/27 06:12:46 the connection is:  READY
+2022/10/27 06:12:46 Current lam: 28, new lam: 28
+2022/10/27 06:12:46 Correcting own Lamport (28), instead using supplied Lamport-time 30
+2022/10/27 06:12:46 Participant dwa joined Chitty-Chat at Lamport time 29
+2022/10/27 06:12:46 Participant dwa joined Chitty-Chat at Lamport time 29
+2022/10/27 06:12:47 dwa: dwa | Lamport: 31
+2022/10/27 06:12:47 Correcting own Lamport (30), instead using supplied Lamport-time 32
+2022/10/27 06:12:47 dwa: dwa | Lamport: 31
+2022/10/27 06:12:47 dwa: dwa | Lamport: 33
+2022/10/27 06:12:47 dwa: dwa | Lamport: 33
+2022/10/27 06:12:47 Correcting own Lamport (32), instead using supplied Lamport-time 34
+2022/10/27 06:12:48 dwa: awd | Lamport: 35
+2022/10/27 06:12:48 dwa: awd | Lamport: 35
+2022/10/27 06:12:48 Correcting own Lamport (34), instead using supplied Lamport-time 36
+2022/10/27 06:12:49 dwa: d | Lamport: 37
+2022/10/27 06:12:49 dwa: d | Lamport: 37
+2022/10/27 06:12:49 Correcting own Lamport (36), instead using supplied Lamport-time 38
+2022/10/27 06:12:50 dwa: d | Lamport: 39
+2022/10/27 06:12:50 dwa: d | Lamport: 39
+2022/10/27 06:12:50 Correcting own Lamport (38), instead using supplied Lamport-time 40
+2022/10/27 06:13:22 dwa: d | Lamport: 41
+2022/10/27 06:13:22 dwa: d | Lamport: 41
+2022/10/27 06:13:22 Correcting own Lamport (40), instead using supplied Lamport-time 42
+2022/10/27 06:13:24 dwa: a | Lamport: 43
+2022/10/27 06:13:24 dwa: a | Lamport: 43
+2022/10/27 06:13:24 Correcting own Lamport (42), instead using supplied Lamport-time 44
+2022/10/27 06:13:28 dwa: ? | Lamport: 45
+2022/10/27 06:13:28 dwa: ? | Lamport: 45
+2022/10/27 06:13:28 Correcting own Lamport (44), instead using supplied Lamport-time 46

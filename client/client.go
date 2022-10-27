@@ -17,9 +17,12 @@ import (
 
 	ui "github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
+
+	"github.com/LocatedInSpace/ChittyChat/chatlist"
 )
 
 var serverPort = flag.String("server", "5400", "Tcp server")
+var logName = flag.String("logname", "log", "Name of log file output")
 
 var server gRPC.ChittyChatClient //the server
 var ServerConn *grpc.ClientConn  //the server connection
@@ -38,47 +41,37 @@ var l Lamport = Lamport{timestamp: 0}
 
 func (l *Lamport) Get() int64 {
 	l.timestamp++
-	return l.timestamp - 1
+	return l.timestamp
 }
 
 func (l *Lamport) Correct(time int64) {
 	if l.timestamp < time {
+		log.Printf("Correcting own Lamport (%v), instead using supplied Lamport-time %v\n", l.timestamp, time+1)
 		l.timestamp = time
-		l.timestamp++
+	} else if time < l.timestamp {
+		log.Printf("Received Lamport-time %v, instead using own Lamport (%v)\n", time, l.timestamp)
 	}
 }
 
 func main() {
+	flag.Parse()
+
 	//log to file instead of console
-	//f := setLog()
-	//defer f.Close()
+	f := setLog()
+	defer f.Close()
 
 	if err := ui.Init(); err != nil {
 		log.Fatalf("failed to initialize termui: %v", err)
 	}
 	defer ui.Close()
 
-	flag.Parse()
 	participants = make(map[int32]string)
 	updated = make(chan bool)
 
-	li := widgets.NewList()
+	li := chatlist.NewList()
+	li.Rows = make([]string, 0)
 	li.Title = "Chat (Disconnected)"
-	/*li.Rows = []string{
-		"[1] [dumbdwa dwa jdoawd uwahd uiawhdiuawh duiawhduiawhuidhwaiu](fg:blue)",
-		"[2] [library](fg:red)",
-		"[3] [color](fg:white,bg:green) output",
-		"[4] output.go",
-		"[5] random_out.go",
-		"[6] dashboard.go",
-		"[7] foo",
-		"[8] bar",
-		"[9] baz",
-	}*/
-	//li.TextStyle = ui.NewStyle(ui.ColorWhite)
 	li.WrapText = true
-	li.SelectedRowStyle = ui.NewStyle(ui.ColorClear, ui.ColorBlue)
-	//li.SetRect(0, 0, 200, 200)
 
 	input := widgets.NewParagraph()
 	input.Title = "Enter your displayname"
@@ -104,7 +97,7 @@ func main() {
 	//ui.Clear()
 	//ui.Render(grid)
 
-	msgs := make(chan string)
+	msgs := make(chan string, 10)
 
 	uiEvents := ui.PollEvents()
 	for {
@@ -121,38 +114,45 @@ func main() {
 				payload := e.Payload.(ui.Resize)
 				grid.SetRect(1, 1, payload.Width-1, payload.Height-1)
 			case "<Down>", "<MouseWheelDown>":
-				li.ScrollAmount(1)
+				if len(li.Rows) == 0 {
+					continue
+				}
+				li.ScrollDown()
 			case "<Up>", "<MouseWheelUp>":
-				li.ScrollAmount(-1)
+				if len(li.Rows) == 0 {
+					continue
+				}
+				li.ScrollUp()
 			case "<Enter>":
 				if len(input.Text) > 0 {
 					// not authenticated
 					if token == "" {
 						displayName = strings.TrimSpace(input.Text)
 						token = TryAuthenticate(li, msgs)
-						if token != "" {
-							li.Title = "Chat (Connected)"
-							input.Title = "Hello, " + displayName
-						}
 					} else {
 						msgs <- strings.TrimSpace(input.Text)
 					}
 					input.Text = ""
 				}
-				li.ScrollBottom()
 			default:
 				switch e.Type {
 				case ui.KeyboardEvent: // handle all key presses
 					if len(e.ID) <= 2 {
 						input.Text += e.ID
 					}
-					//log.Print(e.ID) // keypress string
 				}
 			}
 		case <-updated:
 		}
 
 		ui.Clear()
+		if token == "" {
+			li.Title = "Chat (Disconnected)"
+			input.Title = "Enter your displayname"
+		} else {
+			li.Title = "Chat (Connected)"
+			input.Title = "Hello, " + displayName
+		}
 		ui.Render(grid)
 	}
 }
@@ -174,7 +174,7 @@ func GetName(i int32) string {
 	}
 }
 
-func LogUserUpdate(s *gRPC.StatusChange, li *widgets.List) {
+func LogUserUpdate(s *gRPC.StatusChange, li *chatlist.List) {
 	l.Correct(s.Lamport)
 	if s.Joined {
 		participants[s.Id] = s.ClientName
@@ -188,6 +188,7 @@ func LogUserUpdate(s *gRPC.StatusChange, li *widgets.List) {
 		log.Printf("Participant %s left Chitty-Chat at Lamport time %v\n", s.ClientName, s.Lamport)
 		li.Rows = append(li.Rows, fmt.Sprintf("[Participant %s left Chitty-Chat at Lamport time %v](fg:yellow)", s.ClientName, s.Lamport))
 	}
+	li.ScrollBottom()
 	// tells ui to update, if it can
 	select {
 	case updated <- true:
@@ -195,19 +196,20 @@ func LogUserUpdate(s *gRPC.StatusChange, li *widgets.List) {
 	}
 }
 
-func LogMessage(li *widgets.List, msg *gRPC.MessageRecv) {
+func LogMessage(li *chatlist.List, msg *gRPC.MessageRecv) {
 	log.Printf("%s: %s | Lamport: %v", GetName(msg.Id), msg.Message, msg.Lamport)
-	li.Rows = append(li.Rows, fmt.Sprintf("[Lamport: %v](fg:black,bg:white) %s: %s", msg.Lamport, GetName(msg.Id), msg.Message))
+	li.Rows = append(li.Rows, fmt.Sprintf("[Lamport: %v](fg:black,bg:white) [%s](fg:cyan): %s", msg.Lamport, GetName(msg.Id), msg.Message))
+	li.ScrollBottom()
 	// tells ui to update, if it can
 	select {
 	case updated <- true:
-	default:
 	}
 }
 
-func LogError(li *widgets.List, err error) {
+func LogError(li *chatlist.List, err error) {
 	log.Println(err)
 	li.Rows = append(li.Rows, fmt.Sprintf("[%s](fg:red)", err))
+	li.ScrollBottom()
 	// tells ui to update, if it can
 	select {
 	case updated <- true:
@@ -215,13 +217,15 @@ func LogError(li *widgets.List, err error) {
 	}
 }
 
-func TryAuthenticate(li *widgets.List, msgs <-chan string) string {
+func TryAuthenticate(li *chatlist.List, msgs <-chan string) string {
 
 	ConnectToServer()
 	//defer ServerConn.Close()
-
+	lamN := l.Get()
+	log.Printf("Current lam: %v, new lam: %v\n", l.timestamp, lamN)
 	// status stream
-	sStream, err := server.Join(context.Background(), &gRPC.Information{ClientName: displayName})
+	sStream, err := server.Join(context.Background(), &gRPC.Information{ClientName: displayName, Lamport: lamN})
+
 	if err != nil {
 		LogError(li, err)
 		return ""
@@ -247,7 +251,7 @@ func TryAuthenticate(li *widgets.List, msgs <-chan string) string {
 	return status.Token
 }
 
-func UserUpdates(s gRPC.ChittyChat_JoinClient, li *widgets.List) {
+func UserUpdates(s gRPC.ChittyChat_JoinClient, li *chatlist.List) {
 	for {
 		status, err := s.Recv()
 		if err != nil {
@@ -260,7 +264,7 @@ func UserUpdates(s gRPC.ChittyChat_JoinClient, li *widgets.List) {
 	LogError(li, errors.New("Ended UserUpdates"))
 }
 
-func RecvMessages(mStream gRPC.ChittyChat_PublishClient, li *widgets.List) {
+func RecvMessages(mStream gRPC.ChittyChat_PublishClient, li *chatlist.List) {
 	for {
 		msg, err := mStream.Recv()
 		// the stream is closed so we can exit the loop
@@ -278,15 +282,15 @@ func RecvMessages(mStream gRPC.ChittyChat_PublishClient, li *widgets.List) {
 	LogError(li, errors.New("Ended RecvMessages"))
 }
 
-func SendMessages(mStream gRPC.ChittyChat_PublishClient, msgs <-chan string, li *widgets.List) {
+func SendMessages(mStream gRPC.ChittyChat_PublishClient, msgs <-chan string, li *chatlist.List) {
 	for {
 		// receive input text from UI loop
 		msg := <-msgs
 
-		if !conReady(server) {
+		/*if ServerConn.GetState().String() != "READY" {
 			LogError(li, errors.New("Connection to server is faulty :("))
 			continue
-		}
+		}*/
 
 		err := mStream.Send(&gRPC.MessageSent{Token: token, Message: msg, Lamport: l.Get()})
 		if err != nil {
@@ -308,7 +312,7 @@ func ConnectToServer() {
 	opts = append(opts, grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	//dial the server, with the flag "server", to get a connection to it
-	log.Printf("client %s: Attempts to dial on port %s\n", "dummy", *serverPort)
+	log.Printf("%s: Attempts to dial on port %s\n", displayName, *serverPort)
 	conn, err := grpc.Dial(fmt.Sprintf(":%s", *serverPort), opts...)
 	if err != nil {
 		log.Printf("Fail to Dial : %v", err)
@@ -322,14 +326,9 @@ func ConnectToServer() {
 	log.Println("the connection is: ", conn.GetState().String())
 }
 
-// Function which returns a true boolean if the connection to the server is ready, and false if it's not.
-func conReady(s gRPC.ChittyChatClient) bool {
-	return ServerConn.GetState().String() == "READY"
-}
-
 // sets the logger to use a log.txt file instead of the console
 func setLog() *os.File {
-	f, err := os.OpenFile("log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	f, err := os.OpenFile(*logName+".txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
 	}
