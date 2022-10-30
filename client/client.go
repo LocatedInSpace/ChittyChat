@@ -5,7 +5,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"strings"
@@ -19,6 +18,7 @@ import (
 	"github.com/gizak/termui/v3/widgets"
 
 	"github.com/LocatedInSpace/ChittyChat/chatlist"
+	"golang.design/x/clipboard"
 )
 
 var serverPort = flag.String("server", "5400", "Tcp server")
@@ -65,6 +65,12 @@ func main() {
 	}
 	defer ui.Close()
 
+	// Init returns an error if the package is not ready for use.
+	err := clipboard.Init()
+	if err != nil {
+		panic(err)
+	}
+
 	participants = make(map[int32]string)
 	updated = make(chan bool)
 
@@ -107,7 +113,10 @@ func main() {
 			case "<C-c>":
 				return
 			case "<C-<Backspace>>":
-				input.Text = input.Text[:len(input.Text)-1]
+				end := len(input.Text)
+				if end > 0 {
+					input.Text = input.Text[:end-1]
+				}
 			case "<Space>":
 				input.Text += " "
 			case "<Resize>":
@@ -127,6 +136,9 @@ func main() {
 				if len(input.Text) > 0 {
 					// not authenticated
 					if token == "" {
+						li.Rows = append(li.Rows, "[Attempting to authenticate with server...](bg:yellow,fg:black)")
+						li.ScrollBottom()
+						ui.Render(grid)
 						displayName = strings.TrimSpace(input.Text)
 						token = TryAuthenticate(li, msgs)
 					} else {
@@ -137,13 +149,33 @@ func main() {
 			default:
 				switch e.Type {
 				case ui.KeyboardEvent: // handle all key presses
-					if len(e.ID) <= 2 {
+					if e.ID == "<C-v>" {
+						input.Text += string(clipboard.Read(clipboard.FmtText))
+					} else if len(e.ID) <= 2 {
 						input.Text += e.ID
 					}
 				}
 			}
 		case <-updated:
 		}
+		/*
+			parsed_text := ""
+			for _, c := range input.Text {
+				switch c {
+				case '\r','\n', '\t':
+				default:
+					parsed_text += string(c)
+				}
+			}*/
+		input.Text = strings.ReplaceAll(input.Text, "\n", "")
+		input.Text = strings.ReplaceAll(input.Text, "\r", "")
+		input.Text = strings.ReplaceAll(input.Text, "\t", "")
+		// no longer than 128
+		end := len(input.Text)
+		if end > 128 {
+			end = 128
+		}
+		input.Text = input.Text[:end]
 
 		ui.Clear()
 		if token == "" {
@@ -182,9 +214,8 @@ func LogUserUpdate(s *gRPC.StatusChange, li *chatlist.List) {
 		li.Rows = append(li.Rows, fmt.Sprintf("[Participant %s joined Chitty-Chat at Lamport time %v](fg:green)", s.ClientName, s.Lamport))
 		//li.Rows = append(li.Rows, fmt.Sprintf("[Lamport: %v](fg:black,bg:white) %s: %s", err))
 	} else {
-		if _, ok := participants[s.Id]; ok {
-			delete(participants, s.Id)
-		}
+		// we dont need to check if s.Id exists, since it will no-op if not valid
+		delete(participants, s.Id)
 		log.Printf("Participant %s left Chitty-Chat at Lamport time %v\n", s.ClientName, s.Lamport)
 		li.Rows = append(li.Rows, fmt.Sprintf("[Participant %s left Chitty-Chat at Lamport time %v](fg:yellow)", s.ClientName, s.Lamport))
 	}
@@ -200,10 +231,8 @@ func LogMessage(li *chatlist.List, msg *gRPC.MessageRecv) {
 	log.Printf("%s: %s | Lamport: %v", GetName(msg.Id), msg.Message, msg.Lamport)
 	li.Rows = append(li.Rows, fmt.Sprintf("[Lamport: %v](fg:black,bg:white) [%s](fg:cyan): %s", msg.Lamport, GetName(msg.Id), msg.Message))
 	li.ScrollBottom()
-	// tells ui to update, if it can
-	select {
-	case updated <- true:
-	}
+	// ui update event
+	updated <- true
 }
 
 func LogError(li *chatlist.List, err error) {
@@ -218,13 +247,27 @@ func LogError(li *chatlist.List, err error) {
 }
 
 func TryAuthenticate(li *chatlist.List, msgs <-chan string) string {
+	//dial options
+	//the server is not using TLS, so we use insecure credentials
+	//(should be fine for local testing but not in the real world)
+	var opts []grpc.DialOption
+	opts = append(opts, grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
 
-	ConnectToServer()
-	//defer ServerConn.Close()
-	lamN := l.Get()
-	log.Printf("Current lam: %v, new lam: %v\n", l.timestamp, lamN)
+	//dial the server, with the flag "server", to get a connection to it
+	log.Printf("%s: Attempts to dial on port %s\n", displayName, *serverPort)
+	conn, err := grpc.Dial(fmt.Sprintf(":%s", *serverPort), opts...)
+	if err != nil {
+		LogError(li, err)
+		return ""
+	}
+
+	server = gRPC.NewChittyChatClient(conn)
+	ServerConn = conn
+
+	lam := l.Get()
+	log.Printf("Sending join message to server | Lamport:  %v\n", lam)
 	// status stream
-	sStream, err := server.Join(context.Background(), &gRPC.Information{ClientName: displayName, Lamport: lamN})
+	sStream, err := server.Join(context.Background(), &gRPC.Information{ClientName: displayName, Lamport: lam})
 
 	if err != nil {
 		LogError(li, err)
@@ -236,7 +279,6 @@ func TryAuthenticate(li *chatlist.List, msgs <-chan string) string {
 		return ""
 	}
 	LogUserUpdate(status, li)
-	go UserUpdates(sStream, li)
 
 	// message stream
 	mStream, err := server.Publish(context.Background())
@@ -245,85 +287,86 @@ func TryAuthenticate(li *chatlist.List, msgs <-chan string) string {
 		return ""
 	}
 
-	//Infinite loop to listen for clients input.
-	go RecvMessages(mStream, li)
-	go SendMessages(mStream, msgs, li)
+	go HandleStreams(sStream, mStream, msgs, li)
+
 	return status.Token
 }
 
-func UserUpdates(s gRPC.ChittyChat_JoinClient, li *chatlist.List) {
+func HandleStreams(sStream gRPC.ChittyChat_JoinClient, mStream gRPC.ChittyChat_PublishClient, msgs <-chan string, li *chatlist.List) {
+	errs := make(chan error)
+	done := make(chan bool)
+	go UserUpdates(sStream, li, errs)
+	go RecvMessages(mStream, li, errs)
+	go SendMessages(mStream, msgs, li, errs, done)
+
+	// we deliberately only wait on one error, the other two (if not SendMessages) will fail by themselves
+	err := <-errs
+	// tell SendMessages to error
+	done <- true
+	LogError(li, err)
+	token = ""
+	ServerConn.Close()
+}
+
+func UserUpdates(s gRPC.ChittyChat_JoinClient, li *chatlist.List, errs chan<- error) {
 	for {
 		status, err := s.Recv()
 		if err != nil {
-			LogError(li, err)
+			if strings.Contains(err.Error(), "forcibly closed by the remote host") {
+				err = errors.New("Server has went offline")
+			}
+			// errs will only wait *once*
+			// so, it should see if it's waiting on us
+			// if not, then RecvMessage or SendMessage failed first, and that error is displayed
+			select {
+			case errs <- err:
+			default:
+			}
 			break
 		}
 		LogUserUpdate(status, li)
 	}
-	token = ""
-	LogError(li, errors.New("Ended UserUpdates"))
 }
 
-func RecvMessages(mStream gRPC.ChittyChat_PublishClient, li *chatlist.List) {
+func RecvMessages(mStream gRPC.ChittyChat_PublishClient, li *chatlist.List, errs chan<- error) {
 	for {
 		msg, err := mStream.Recv()
-		// the stream is closed so we can exit the loop
-		if err == io.EOF {
-			break
-		}
-		// some other error
 		if err != nil {
+			if strings.Contains(err.Error(), "forcibly closed by the remote host") {
+				err = errors.New("Server has went offline")
+			}
+			// see comment for UserUpdates
+			select {
+			case errs <- err:
+			default:
+			}
 			break
 		}
 		LogMessage(li, msg)
 		l.Correct(msg.Lamport)
 	}
-	token = ""
-	LogError(li, errors.New("Ended RecvMessages"))
 }
 
-func SendMessages(mStream gRPC.ChittyChat_PublishClient, msgs <-chan string, li *chatlist.List) {
+func SendMessages(mStream gRPC.ChittyChat_PublishClient, msgs <-chan string, li *chatlist.List, errs chan<- error, exit <-chan bool) {
+sendloop:
 	for {
-		// receive input text from UI loop
-		msg := <-msgs
-
-		/*if ServerConn.GetState().String() != "READY" {
-			LogError(li, errors.New("Connection to server is faulty :("))
-			continue
-		}*/
-
-		err := mStream.Send(&gRPC.MessageSent{Token: token, Message: msg, Lamport: l.Get()})
-		if err != nil {
-			LogError(li, err)
-			break
+		// since SendMessages is not like UserUpdates/RecvMessages in that it receives from server
+		// it needs an "updater" akin to our exit-channel, so that it does not forever wait on <-msgs update
+		select {
+		case msg := <-msgs:
+			err := mStream.Send(&gRPC.MessageSent{Token: token, Message: msg, Lamport: l.Get()})
+			if err != nil {
+				// see comment for UserUpdates
+				select {
+				case errs <- err:
+				default:
+				}
+				break sendloop
+			}
+		case <-exit:
+			break sendloop
 		}
 	}
-	token = ""
-	LogError(li, errors.New("Ended SendMessages"))
-}
-
-// connect to server
-func ConnectToServer() {
-
-	//dial options
-	//the server is not using TLS, so we use insecure credentials
-	//(should be fine for local testing but not in the real world)
-	var opts []grpc.DialOption
-	opts = append(opts, grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
-
-	//dial the server, with the flag "server", to get a connection to it
-	log.Printf("%s: Attempts to dial on port %s\n", displayName, *serverPort)
-	conn, err := grpc.Dial(fmt.Sprintf(":%s", *serverPort), opts...)
-	if err != nil {
-		log.Printf("Fail to Dial : %v", err)
-		return
-	}
-
-	// makes a client from the server connection and saves the connection
-	// and prints rather or not the connection was is READY
-	server = gRPC.NewChittyChatClient(conn)
-	ServerConn = conn
-	log.Println("the connection is: ", conn.GetState().String())
 }
 
 // sets the logger to use a log.txt file instead of the console

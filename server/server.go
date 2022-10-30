@@ -5,10 +5,10 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"net"
 	"os"
+	"strings"
 	"sync"
 
 	// this has to be the same as the go.mod module,
@@ -178,7 +178,9 @@ awaitStream:
 			}
 		}
 	}
-	log.Println(err)
+	if !strings.Contains(err.Error(), "context canceled") {
+		log.Println(err)
+	}
 	status.Lamport = s.lamport.Get()
 	log.Printf("Participant %s left Chitty-Chat at Lamport time %v\n", nP.name, status.Lamport)
 	s.mutex.Lock()
@@ -213,24 +215,25 @@ func (s *Server) QueryUsername(ctx context.Context, id *gRPC.Id) (*gRPC.NameOfId
 func (s *Server) PollMessages(stream gRPC.ChittyChat_PublishServer, msgs chan<- gRPC.MessageRecv) {
 
 	msgLock.Lock()
+	// append received channel of messages to msgChannels
+	// every participant has one such channel, and it is how each thread
+	// sends messages back to main thread (and other threads)
 	msgChannels = append(msgChannels, msgs)
 	msgLock.Unlock()
+	// variable for storing the name of the client owning the thread
+	// this is needed for logging which thread exited, since participants & msgChannels do NOT know which is which
+	lastName := ""
 	for {
 		// get the next message from the stream
 		msg, err := stream.Recv()
-
-		// the stream is closed so we can exit the loop
-		if err == io.EOF {
-			break
-		}
-		// some other error
 		if err != nil {
 			break
 		}
 
 		if _, ok := s.participants[msg.Token]; ok {
 			s.lamport.Correct(msg.Lamport)
-			log.Printf("Received '%s' from %v | Lamport: %v, Corrected-Lamport: %v\n", msg.Message, s.participants[msg.Token].name, msg.Lamport, s.lamport.timestamp)
+			lastName = s.participants[msg.Token].name
+			log.Printf("Received '%s' from %v | Lamport: %v, Corrected-Lamport: %v\n", msg.Message, lastName, msg.Lamport, s.lamport.timestamp)
 			// add this to every participants channel
 			msg := gRPC.MessageRecv{Id: s.participants[msg.Token].id, Message: msg.Message, Lamport: s.lamport.Get()}
 			for _, pMsgs := range msgChannels {
@@ -249,10 +252,11 @@ func (s *Server) PollMessages(stream gRPC.ChittyChat_PublishServer, msgs chan<- 
 			index = i
 		}
 	}
+	// remove self from list of channels
 	msgChannels = append(msgChannels[:index], msgChannels[index+1:]...)
 	msgLock.Unlock()
 
-	log.Printf("Ended PollMessages")
+	log.Printf("Ended PollMessages for %s", lastName)
 }
 
 func (s *Server) Publish(stream gRPC.ChittyChat_PublishServer) error {
