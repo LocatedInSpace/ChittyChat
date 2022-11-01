@@ -124,7 +124,6 @@ func (self *List) realDy() int {
 	real := self.Inner.Dy()
 
 	point := self.Inner.Min
-	// draw rows
 	for row := self.topRow; row < len(self.Rows) && point.Y < self.Inner.Max.Y; row++ {
 		cells := ParseStyles(self.Rows[row], self.TextStyle)
 		cells = WrapCells(cells, uint(self.Inner.Dx()))
