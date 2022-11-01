@@ -33,4 +33,4 @@ Colors are not uniform between every terminal - in the ones tested, PowerShell a
 
 The program may also crash arbitrarily upon resizing.
 
-Long messages of text (multiline) become a little weird when scrolling, as they are treated as a single row still by termui - we've rewritten the rendering logic for list to attempt to remedy this, but it might fail for cases we haven't thought of.
+Long messages of text (multiline) become a little weird when scrolling, as they are treated as a single row still by termui - we've rewritten the rendering logic for list to attempt to remedy this, but it might fail for cases we haven't thought of. The chat will also feel slightly jittery with multiline messages, we decided to accept the "solution" we came up with, since the goal of the assignment wasn't UI :)

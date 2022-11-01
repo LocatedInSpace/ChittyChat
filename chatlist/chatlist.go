@@ -32,12 +32,7 @@ func (self *List) Draw(buf *Buffer) {
 
 	point := self.Inner.Min
 
-	// adjusts view into widget
-	if self.SelectedRow >= self.Inner.Dy()+self.topRow {
-		self.topRow = self.SelectedRow - self.Inner.Dy() + 1
-	} else if self.SelectedRow < self.topRow {
-		self.topRow = self.SelectedRow
-	}
+	self.topRow = self.SelectedRow
 
 	// draw rows
 	for row := self.topRow; row < len(self.Rows) && point.Y < self.Inner.Max.Y; row++ {
@@ -93,12 +88,10 @@ func (self *List) ScrollAmount(amount int) {
 }
 
 func (self *List) ScrollUp() {
-	self.SelectedRow = self.topRow
 	self.ScrollAmount(-1)
 }
 
 func (self *List) ScrollDown() {
-	self.SelectedRow = self.topRow + self.Inner.Dy() - 1
 	self.ScrollAmount(1)
 }
 
@@ -127,6 +120,35 @@ func (self *List) ScrollTop() {
 	self.SelectedRow = 0
 }
 
+func (self *List) realDy() int {
+	real := self.Inner.Dy()
+
+	point := self.Inner.Min
+	// draw rows
+	for row := self.topRow; row < len(self.Rows) && point.Y < self.Inner.Max.Y; row++ {
+		cells := ParseStyles(self.Rows[row], self.TextStyle)
+		cells = WrapCells(cells, uint(self.Inner.Dx()))
+		for j := 0; j < len(cells) && point.Y < self.Inner.Max.Y; j++ {
+			if cells[j].Rune == '\n' {
+				real--
+				point = image.Pt(self.Inner.Min.X, point.Y+1)
+			} else {
+				if point.X+1 == self.Inner.Max.X+1 && len(cells) > self.Inner.Dx() {
+					break
+				} else {
+					point = point.Add(image.Pt(rw.RuneWidth(cells[j].Rune), 0))
+				}
+			}
+		}
+		point = image.Pt(self.Inner.Min.X, point.Y+1)
+	}
+
+	return real
+}
+
 func (self *List) ScrollBottom() {
-	self.SelectedRow = len(self.Rows) - 1
+	self.SelectedRow = len(self.Rows) - self.realDy()
+	if self.SelectedRow < 0 {
+		self.SelectedRow = 0
+	}
 }
