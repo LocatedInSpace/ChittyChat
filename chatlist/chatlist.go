@@ -66,7 +66,7 @@ func (self *List) Draw(buf *Buffer) {
 	}
 
 	// draw DOWN_ARROW if needed
-	if len(self.Rows) > int(self.topRow)+self.Inner.Dy() {
+	if len(self.Rows) > int(self.topRow)+self.realDy() {
 		buf.SetCell(
 			NewCell(DOWN_ARROW, NewStyle(ColorWhite)),
 			image.Pt(self.Inner.Max.X-1, self.Inner.Max.Y-1),
