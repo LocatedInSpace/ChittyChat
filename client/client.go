@@ -82,9 +82,9 @@ func main() {
 	defer ui.Close()
 
 	// Init returns an error if the package is not ready for use.
-	err := clipboard.Init()
-	if err != nil {
-		panic(err)
+	cliperr := clipboard.Init()
+	if cliperr != nil {
+		log.Printf("Clipboard could not be initialized, continuing without pasting ability")
 	}
 
 	participants = make(map[int32]string)
@@ -114,11 +114,6 @@ func main() {
 	)
 
 	ui.Render(grid)
-	//termWidth, termHeight = ui.TerminalDimensions()
-	//grid.SetRect(1, 1, termWidth-1, termHeight-1)
-	//ui.Clear()
-	//ui.Render(grid)
-
 	msgs := make(chan string, 10)
 
 	uiEvents := ui.PollEvents()
@@ -158,6 +153,7 @@ func main() {
 						ui.Render(grid)
 						displayName = strings.TrimSpace(input.Text)
 						token = TryAuthenticate(li, msgs)
+						log.Printf("Im doing something silly..\n")
 					} else {
 						msgs <- strings.TrimSpace(input.Text)
 					}
@@ -166,7 +162,7 @@ func main() {
 			default:
 				switch e.Type {
 				case ui.KeyboardEvent: // handle all key presses
-					if e.ID == "<C-v>" {
+					if e.ID == "<C-v>" && cliperr == nil {
 						input.Text += string(clipboard.Read(clipboard.FmtText))
 					} else if len(e.ID) <= 4 {
 						input.Text += e.ID
@@ -176,10 +172,12 @@ func main() {
 		case <-updated:
 		}
 		// removes newlines, checks length, etc.
-		if token == "" {
-			input.Text = Validated(input.Text, 20)
-		} else {
-			input.Text = Validated(input.Text, 128)
+		if len(input.Text) > 0 {
+			if token == "" {
+				input.Text = Validated(input.Text, 20)
+			} else {
+				input.Text = Validated(input.Text, 128)
+			}
 		}
 
 		ui.Clear()
@@ -253,9 +251,9 @@ func TryAuthenticate(li *chatlist.List, msgs <-chan string) string {
 	conn, err := grpc.Dial(fmt.Sprintf(":%s", *serverPort), opts...)
 	if err != nil {
 		if strings.Contains(err.Error(), "context deadline exceeded") {
-			LogError(li, errors.New("Server could not be reached"))
+			go LogError(li, errors.New("Server could not be reached"))
 		} else {
-			LogError(li, err)
+			go LogError(li, err)
 		}
 		return ""
 	}
@@ -268,27 +266,30 @@ func TryAuthenticate(li *chatlist.List, msgs <-chan string) string {
 	// status stream
 	sStream, err := server.Join(context.Background(), &gRPC.Information{ClientName: displayName, Lamport: lam})
 	if err != nil {
-		LogError(li, err)
+		// the different Logs are meant to be ran in a goroutine
+		// since they use a channel for ui-update, if not goroutine it will cause a deadlock waiting
+		go LogError(li, err)
+		ServerConn.Close()
 		return ""
 	}
 
+	// first message is result of our join-request
 	status, err := sStream.Recv()
 	if err != nil || !status.Joined {
-		LogError(li, errors.New("Duplicate name, please change your client name"))
+		go LogError(li, errors.New("Duplicate name, please change your client name"))
+		ServerConn.Close()
 		return ""
 	}
 
 	log.Printf("Server accepted our name %s, our token is: %s", status.ClientName, status.Token)
 
 	l.Correct(status.Lamport)
-	// the different Logs are meant to be ran in a goroutine
-	// since they use a channel for ui-update, if not goroutine it will cause a deadlock waiting
 	go LogUserUpdate(status, li)
 
 	// message stream
 	mStream, err := server.Publish(context.Background())
 	if err != nil {
-		LogError(li, err)
+		go LogError(li, err)
 		return ""
 	}
 
