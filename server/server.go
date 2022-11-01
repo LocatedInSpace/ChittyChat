@@ -70,13 +70,12 @@ func Validated(s string, max int) string {
 	r := strings.ReplaceAll(s, "\n", "")
 	r = strings.ReplaceAll(r, "\r", "")
 	r = strings.ReplaceAll(r, "\t", "")
-	// no longer than 128
-	end := len(r)
+	runes := []rune(r)
+	end := len(runes)
 	if end > max {
 		end = max
 	}
-	r = r[:end]
-	return r
+	return string(runes[:end])
 }
 
 // flags are used to get arguments from the terminal. Flags take a value, a default value and a description of the flag.

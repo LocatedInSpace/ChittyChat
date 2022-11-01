@@ -61,13 +61,12 @@ func Validated(s string, max int) string {
 	r := strings.ReplaceAll(s, "\n", "")
 	r = strings.ReplaceAll(r, "\r", "")
 	r = strings.ReplaceAll(r, "\t", "")
-	// no longer than 128
-	end := len(r)
+	runes := []rune(r)
+	end := len(runes)
 	if end > max {
 		end = max
 	}
-	r = r[:end]
-	return r
+	return string(runes[:end])
 }
 
 func main() {
@@ -130,9 +129,10 @@ func main() {
 			case "<C-c>":
 				return
 			case "<C-<Backspace>>":
-				end := len(input.Text)
+				runes := []rune(input.Text)
+				end := len(runes)
 				if end > 0 {
-					input.Text = input.Text[:end-1]
+					input.Text = string(runes[:end-1])
 				}
 			case "<Space>":
 				input.Text += " "
@@ -168,7 +168,7 @@ func main() {
 				case ui.KeyboardEvent: // handle all key presses
 					if e.ID == "<C-v>" {
 						input.Text += string(clipboard.Read(clipboard.FmtText))
-					} else if len(e.ID) <= 2 {
+					} else if len(e.ID) <= 4 {
 						input.Text += e.ID
 					}
 				}
