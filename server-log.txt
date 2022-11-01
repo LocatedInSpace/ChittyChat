@@ -1,0 +1,29 @@
+2022/11/01 18:18:05 Creating listener on port 5400
+2022/11/01 18:18:05 Listening at 127.0.0.1:5400
+2022/11/01 18:18:29 Join() | Join request received from mathilda | Lamport: 1
+2022/11/01 18:18:29 Join() | Generated token for mathilda: 6742a899-20e1-479f-96f9-56057146acc2
+2022/11/01 18:18:29 Join() | Sent StatusChange(joined) of mathilda to mathilda | Lamport: 2
+2022/11/01 18:18:37 Publish() | Received 'hello everyone!' from mathilda | Lamport: 3
+2022/11/01 18:18:53 Join() | Join request received from awesome_saucexx92 | Lamport: 1
+2022/11/01 18:18:53 Join() | Received Lamport-time 1, instead using own Lamport++ (5)
+2022/11/01 18:18:53 Join() | Sent StatusChange(joined) of awesome_saucexx92 to mathilda | Lamport: 6
+2022/11/01 18:18:53 Join() | Generated token for awesome_saucexx92: 3e14ac69-a4bd-4c0c-b988-ccd055bf559b
+2022/11/01 18:18:53 Join() | Sent StatusChange(joined) of awesome_saucexx92 to awesome_saucexx92 | Lamport: 6
+2022/11/01 18:18:58 Publish() | Received 'anyone here?' from awesome_saucexx92 | Lamport: 7
+2022/11/01 18:19:15 Publish() | Received 'yes lol, i am here! your name is quite.. unique :D' from mathilda | Lamport: 9
+2022/11/01 18:19:15 QueryUsername() | Received request about existing id 0: mathilda
+2022/11/01 18:19:32 Join() | Join request received from larry | Lamport: 1
+2022/11/01 18:19:32 Join() | Received Lamport-time 1, instead using own Lamport++ (11)
+2022/11/01 18:19:32 Join() | Sent StatusChange(joined) of larry to mathilda | Lamport: 12
+2022/11/01 18:19:32 Join() | Sent StatusChange(joined) of larry to awesome_saucexx92 | Lamport: 12
+2022/11/01 18:19:32 Join() | Generated token for larry: dac9ff12-418b-48f5-83f1-2f207c3d2507
+2022/11/01 18:19:32 Join() | Sent StatusChange(joined) of larry to larry | Lamport: 12
+2022/11/01 18:19:49 Publish() | Received 'another one joins the fray >:)' from awesome_saucexx92 | Lamport: 13
+2022/11/01 18:19:49 QueryUsername() | Received request about existing id 1: awesome_saucexx92
+2022/11/01 18:20:11 Publish() | Received '?? are you judging me' from larry | Lamport: 15
+2022/11/01 18:20:19 Publish() | Received 'i think he was just being friendly' from mathilda | Lamport: 17
+2022/11/01 18:20:19 QueryUsername() | Received request about existing id 0: mathilda
+2022/11/01 18:23:33 Join() | Participant larry left Chitty-Chat at Lamport time 19
+2022/11/01 18:23:33 Join() | Sent StatusChange(left) of larry to mathilda | Lamport: 19
+2022/11/01 18:23:33 Join() | Sent StatusChange(left) of larry to awesome_saucexx92 | Lamport: 19
+2022/11/01 18:23:50 Publish() | Received 'i wasnt trying to be mean :(' from awesome_saucexx92 | Lamport: 20

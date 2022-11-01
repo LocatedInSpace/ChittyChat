@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	gRPC "github.com/LocatedInSpace/ChittyChat/proto"
 
@@ -22,7 +23,7 @@ import (
 )
 
 var serverPort = flag.String("server", "5400", "Tcp server")
-var logName = flag.String("logname", "log", "Name of log file output")
+var logName = flag.String("logname", "log", "Name of -log.txt file output")
 
 var server gRPC.ChittyChatClient //the server
 var ServerConn *grpc.ClientConn  //the server connection
@@ -45,12 +46,28 @@ func (l *Lamport) Get() int64 {
 }
 
 func (l *Lamport) Correct(time int64) {
-	if l.timestamp < time {
-		log.Printf("Correcting own Lamport (%v), instead using supplied Lamport-time %v\n", l.timestamp, time+1)
+	if time-l.timestamp == 1 {
+		l.timestamp++
+	} else if l.timestamp < time {
+		log.Printf("Correcting own Lamport (%v), instead using supplied Lamport-time %v\n", l.timestamp, time)
 		l.timestamp = time
 	} else if time < l.timestamp {
-		log.Printf("Received Lamport-time %v, instead using own Lamport (%v)\n", time, l.timestamp)
+		log.Printf("Received Lamport-time %v, instead using own Lamport++ (%v)\n", time, l.timestamp+1)
+		l.timestamp++
 	}
+}
+
+func Validated(s string, max int) string {
+	r := strings.ReplaceAll(s, "\n", "")
+	r = strings.ReplaceAll(r, "\r", "")
+	r = strings.ReplaceAll(r, "\t", "")
+	// no longer than 128
+	end := len(r)
+	if end > max {
+		end = max
+	}
+	r = r[:end]
+	return r
 }
 
 func main() {
@@ -158,24 +175,12 @@ func main() {
 			}
 		case <-updated:
 		}
-		/*
-			parsed_text := ""
-			for _, c := range input.Text {
-				switch c {
-				case '\r','\n', '\t':
-				default:
-					parsed_text += string(c)
-				}
-			}*/
-		input.Text = strings.ReplaceAll(input.Text, "\n", "")
-		input.Text = strings.ReplaceAll(input.Text, "\r", "")
-		input.Text = strings.ReplaceAll(input.Text, "\t", "")
-		// no longer than 128
-		end := len(input.Text)
-		if end > 128 {
-			end = 128
+		// removes newlines, checks length, etc.
+		if token == "" {
+			input.Text = Validated(input.Text, 20)
+		} else {
+			input.Text = Validated(input.Text, 128)
 		}
-		input.Text = input.Text[:end]
 
 		ui.Clear()
 		if token == "" {
@@ -196,7 +201,7 @@ func GetName(i int32) string {
 	if _, ok := participants[i]; ok {
 		return participants[i]
 	} else {
-		// meant to query server, for now, just like.. return default
+		log.Printf("Calling QueryUsername with id: %v", i)
 		msg, _ := server.QueryUsername(context.Background(), &gRPC.Id{Id: i})
 		if msg.Exists {
 			participants[i] = msg.Name
@@ -207,7 +212,6 @@ func GetName(i int32) string {
 }
 
 func LogUserUpdate(s *gRPC.StatusChange, li *chatlist.List) {
-	l.Correct(s.Lamport)
 	if s.Joined {
 		participants[s.Id] = s.ClientName
 		log.Printf("Participant %s joined Chitty-Chat at Lamport time %v\n", s.ClientName, s.Lamport)
@@ -220,11 +224,8 @@ func LogUserUpdate(s *gRPC.StatusChange, li *chatlist.List) {
 		li.Rows = append(li.Rows, fmt.Sprintf("[Participant %s left Chitty-Chat at Lamport time %v](fg:yellow)", s.ClientName, s.Lamport))
 	}
 	li.ScrollBottom()
-	// tells ui to update, if it can
-	select {
-	case updated <- true:
-	default:
-	}
+	// ui update event
+	updated <- true
 }
 
 func LogMessage(li *chatlist.List, msg *gRPC.MessageRecv) {
@@ -239,25 +240,23 @@ func LogError(li *chatlist.List, err error) {
 	log.Println(err)
 	li.Rows = append(li.Rows, fmt.Sprintf("[%s](fg:red)", err))
 	li.ScrollBottom()
-	// tells ui to update, if it can
-	select {
-	case updated <- true:
-	default:
-	}
+	// ui update event
+	updated <- true
 }
 
 func TryAuthenticate(li *chatlist.List, msgs <-chan string) string {
-	//dial options
-	//the server is not using TLS, so we use insecure credentials
-	//(should be fine for local testing but not in the real world)
 	var opts []grpc.DialOption
-	opts = append(opts, grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	opts = append(opts, grpc.WithTimeout(5*time.Second), grpc.WithBlock(), grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	//dial the server, with the flag "server", to get a connection to it
 	log.Printf("%s: Attempts to dial on port %s\n", displayName, *serverPort)
 	conn, err := grpc.Dial(fmt.Sprintf(":%s", *serverPort), opts...)
 	if err != nil {
-		LogError(li, err)
+		if strings.Contains(err.Error(), "context deadline exceeded") {
+			LogError(li, errors.New("Server could not be reached"))
+		} else {
+			LogError(li, err)
+		}
 		return ""
 	}
 
@@ -268,17 +267,23 @@ func TryAuthenticate(li *chatlist.List, msgs <-chan string) string {
 	log.Printf("Sending join message to server | Lamport:  %v\n", lam)
 	// status stream
 	sStream, err := server.Join(context.Background(), &gRPC.Information{ClientName: displayName, Lamport: lam})
-
 	if err != nil {
 		LogError(li, err)
 		return ""
 	}
+
 	status, err := sStream.Recv()
 	if err != nil || !status.Joined {
 		LogError(li, errors.New("Duplicate name, please change your client name"))
 		return ""
 	}
-	LogUserUpdate(status, li)
+
+	log.Printf("Server accepted our name %s, our token is: %s", status.ClientName, status.Token)
+
+	l.Correct(status.Lamport)
+	// the different Logs are meant to be ran in a goroutine
+	// since they use a channel for ui-update, if not goroutine it will cause a deadlock waiting
+	go LogUserUpdate(status, li)
 
 	// message stream
 	mStream, err := server.Publish(context.Background())
@@ -324,6 +329,7 @@ func UserUpdates(s gRPC.ChittyChat_JoinClient, li *chatlist.List, errs chan<- er
 			}
 			break
 		}
+		l.Correct(status.Lamport)
 		LogUserUpdate(status, li)
 	}
 }
@@ -354,7 +360,9 @@ sendloop:
 		// it needs an "updater" akin to our exit-channel, so that it does not forever wait on <-msgs update
 		select {
 		case msg := <-msgs:
-			err := mStream.Send(&gRPC.MessageSent{Token: token, Message: msg, Lamport: l.Get()})
+			lam := l.Get()
+			log.Printf("Sending '%s' to server with Lamport time: %v", msg, lam)
+			err := mStream.Send(&gRPC.MessageSent{Token: token, Message: msg, Lamport: lam})
 			if err != nil {
 				// see comment for UserUpdates
 				select {
@@ -371,9 +379,9 @@ sendloop:
 
 // sets the logger to use a log.txt file instead of the console
 func setLog() *os.File {
-	f, err := os.OpenFile(*logName+".txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	f, err := os.OpenFile(*logName+"-log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
-		log.Fatalf("error opening file: %v", err)
+		log.Fatalf("Error opening file: %v", err)
 	}
 	log.SetOutput(f)
 	return f

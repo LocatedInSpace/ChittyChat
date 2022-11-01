@@ -14,9 +14,7 @@ package proto;
 service ChittyChat
 {
     rpc Join (Information) returns (stream StatusChange);
-
     rpc QueryUsername(Id) returns (NameOfId);
-
     rpc Publish (stream MessageSent) returns (stream MessageRecv);
 }
 

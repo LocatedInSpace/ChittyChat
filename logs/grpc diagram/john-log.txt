@@ -1,0 +1,10 @@
+2022/11/01 17:56:41 john: Attempts to dial on port 5400
+2022/11/01 17:56:41 Sending join message to server | Lamport:  1
+2022/11/01 17:56:41 Server accepted our name john, our token is: 9481889f-65d4-4dc7-89d6-3a152c881937
+2022/11/01 17:56:41 Participant john joined Chitty-Chat at Lamport time 2
+2022/11/01 17:56:43 Sending 'hi' to server with Lamport time: 3
+2022/11/01 17:56:43 john: hi | Lamport: 4
+2022/11/01 17:56:54 Correcting own Lamport (4), instead using supplied Lamport-time 6
+2022/11/01 17:56:54 Participant emily joined Chitty-Chat at Lamport time 6
+2022/11/01 17:57:06 emily: anyone here? | Lamport: 8
+2022/11/01 17:57:06 Correcting own Lamport (6), instead using supplied Lamport-time 8

@@ -1,0 +1,13 @@
+2022/11/01 18:19:32 larry: Attempts to dial on port 5400
+2022/11/01 18:19:32 Sending join message to server | Lamport:  1
+2022/11/01 18:19:32 Server accepted our name larry, our token is: dac9ff12-418b-48f5-83f1-2f207c3d2507
+2022/11/01 18:19:32 Correcting own Lamport (1), instead using supplied Lamport-time 12
+2022/11/01 18:19:32 Participant larry joined Chitty-Chat at Lamport time 12
+2022/11/01 18:19:49 Calling QueryUsername with id: 1
+2022/11/01 18:19:49 awesome_saucexx92: another one joins the fray >:) | Lamport: 14
+2022/11/01 18:19:49 Correcting own Lamport (12), instead using supplied Lamport-time 14
+2022/11/01 18:20:11 Sending '?? are you judging me' to server with Lamport time: 15
+2022/11/01 18:20:11 larry: ?? are you judging me | Lamport: 16
+2022/11/01 18:20:19 Calling QueryUsername with id: 0
+2022/11/01 18:20:19 mathilda: i think he was just being friendly | Lamport: 18
+2022/11/01 18:20:19 Correcting own Lamport (16), instead using supplied Lamport-time 18

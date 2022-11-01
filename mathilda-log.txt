@@ -1,0 +1,23 @@
+2022/11/01 18:18:29 mathilda: Attempts to dial on port 5400
+2022/11/01 18:18:29 Sending join message to server | Lamport:  1
+2022/11/01 18:18:29 Server accepted our name mathilda, our token is: 6742a899-20e1-479f-96f9-56057146acc2
+2022/11/01 18:18:29 Participant mathilda joined Chitty-Chat at Lamport time 2
+2022/11/01 18:18:37 Sending 'hello everyone!' to server with Lamport time: 3
+2022/11/01 18:18:37 mathilda: hello everyone! | Lamport: 4
+2022/11/01 18:18:53 Correcting own Lamport (4), instead using supplied Lamport-time 6
+2022/11/01 18:18:53 Participant awesome_saucexx92 joined Chitty-Chat at Lamport time 6
+2022/11/01 18:18:58 awesome_saucexx92: anyone here? | Lamport: 8
+2022/11/01 18:18:58 Correcting own Lamport (6), instead using supplied Lamport-time 8
+2022/11/01 18:19:15 Sending 'yes lol, i am here! your name is quite.. unique :D' to server with Lamport time: 9
+2022/11/01 18:19:15 mathilda: yes lol, i am here! your name is quite.. unique :D | Lamport: 10
+2022/11/01 18:19:32 Correcting own Lamport (10), instead using supplied Lamport-time 12
+2022/11/01 18:19:32 Participant larry joined Chitty-Chat at Lamport time 12
+2022/11/01 18:19:49 awesome_saucexx92: another one joins the fray >:) | Lamport: 14
+2022/11/01 18:19:49 Correcting own Lamport (12), instead using supplied Lamport-time 14
+2022/11/01 18:20:11 larry: ?? are you judging me | Lamport: 16
+2022/11/01 18:20:11 Correcting own Lamport (14), instead using supplied Lamport-time 16
+2022/11/01 18:20:19 Sending 'i think he was just being friendly' to server with Lamport time: 17
+2022/11/01 18:20:19 mathilda: i think he was just being friendly | Lamport: 18
+2022/11/01 18:23:33 Participant larry left Chitty-Chat at Lamport time 19
+2022/11/01 18:23:50 awesome_saucexx92: i wasnt trying to be mean :( | Lamport: 21
+2022/11/01 18:23:50 Correcting own Lamport (19), instead using supplied Lamport-time 21
